@@ -24,6 +24,8 @@ module DeepThought
     # Initialize configuration defaults for originally generated Rails version.
     config.load_defaults 5.2
 
+    config.middleware.use ActionDispatch::Cookies
+
     ENV.update(Environment.new("#{Rails.root}/config/application.yml", Rails.env).envs)
 
     # Settings in config/environments/* take precedence over those specified here.
