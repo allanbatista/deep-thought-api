@@ -31,3 +31,7 @@
 
 en:
   hello: "Hello world"
+  error:
+    1: Authentication Expired
+    2: Authentication Can't find User
+    3: Authentication Google Refused

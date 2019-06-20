@@ -10,8 +10,9 @@ class Auth::SessionsController < ApplicationController
       user = User.create_or_update_by_google_oauth(userinfo)
       return redirect_to(root_path(jwt: user.jwt))
     end
-
-    render json: { message: "auth error" }, status: 400
+  
+  rescue => e
+    redirect_to root_path(error_code: 3, message: t("error.3"))
   end
 
   def destroy

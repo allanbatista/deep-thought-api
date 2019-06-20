@@ -7,11 +7,11 @@ class AuthenticatedApplicationController < ApplicationController
   def set_user!
     @current_user = User.find_by_jwt(request.headers["Authentication"])
   rescue JWT::ExpiredSignature => e
-    redirect_to $google_oauth.oauth_url
+    render json: {error_code: 1, message: I18n.t("error.1")}
   end
 
   def ensure_user!
-    redirect_to $google_oauth.oauth_url unless current_user.present?
+    render json: {error_code: 2, message: I18n.t("error.2")} if current_user.blank?
   end
 
   protected
