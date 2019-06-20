@@ -1,0 +1,11 @@
+default: &default
+  DEEP_THOUGHT__LOG_LEVEL: INFO
+  DEEP_THOUGHT__RAILS_LOG_TO_STDOUT: true
+test: &test
+  <<: *default
+  DEEP_THOUGHT__LOG_LEVEL: ERROR
+development: &development
+  <<: *default
+  DEEP_THOUGHT__LOG_LEVEL: DEBUG
+production: &production
+  <<: *default
