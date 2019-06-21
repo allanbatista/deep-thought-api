@@ -40,9 +40,9 @@ describe GoogleOauth do
   context "#userinfo" do
     it "should retrive userinfo" do
       stub_request(:get, "https://www.googleapis.com/oauth2/v1/userinfo?access_token=fake_access_token&alt=json").
-        to_return(status: 200, body: '{"id":"666","email":"allan@allanbatista.com.br","verified_email":true,"name":"Allan Batista","given_name":"Allan","family_name":"Batista","picture":"https://lh3.googleusercontent.com/-XXXXX/XXX/XXXX/_lomb5UByaM/photo.jpg","hd":"allanbatista.com.br"}', headers: {})
+        to_return(status: 200, body: fixture('apis/google_oauth/userinfo.json'))
 
-      expect(@client.userinfo("fake_access_token")).to eq(JSON.parse('{"id":"666","email":"allan@allanbatista.com.br","verified_email":true,"name":"Allan Batista","given_name":"Allan","family_name":"Batista","picture":"https://lh3.googleusercontent.com/-XXXXX/XXX/XXXX/_lomb5UByaM/photo.jpg","hd":"allanbatista.com.br"}'))
+      expect(@client.userinfo("fake_access_token")).to eq(JSON.parse(fixture('apis/google_oauth/userinfo.json')))
     end
 
     it "should fail auth to retrive userinfo" do
