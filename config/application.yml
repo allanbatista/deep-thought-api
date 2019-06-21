@@ -1,4 +1,5 @@
 default: &default
+  TZ: UTC
   DEEP_THOUGHT__LOG_LEVEL: INFO
   DEEP_THOUGHT__RAILS_LOG_TO_STDOUT: true
   DEEP_THOUGHT__DB_URI: mongodb://localhost:27017/deep_thought
