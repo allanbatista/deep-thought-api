@@ -29,6 +29,7 @@ group :development, :test do
   gem 'database_cleaner'
   gem 'codecov', :require => false
   gem 'webmock'
+  gem 'timecop'
 end
 
 group :development do

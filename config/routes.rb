@@ -1,6 +1,10 @@
 Rails.application.routes.draw do
   root "home#index"
 
+  scope :user, controller: :user do
+    get '/', action: :show, as: :user
+  end
+
   namespace :auth do
     resources :sessions, only: [:destroy] do
       collection do
