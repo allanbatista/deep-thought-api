@@ -27,6 +27,7 @@ group :development, :test do
 
   gem 'rspec-rails', '~> 3.8'
   gem 'database_cleaner'
+  gem 'codecov', :require => false
 end
 
 group :development do
@@ -40,8 +41,5 @@ end
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
 gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
 gem 'mongoid', '~> 7'
-gem 'omniauth-google-oauth2'
-gem 'google-api-client'
-gem 'googleauth'
 gem 'faraday'
 gem 'jwt'
