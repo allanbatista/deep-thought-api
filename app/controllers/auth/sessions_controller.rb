@@ -7,7 +7,7 @@ class Auth::SessionsController < ApplicationController
 
   def google_callback
     userinfo = $google_oauth.userinfo($google_oauth.get_access_token(params[:code]))
-
+    
     if userinfo.present?
       return redirect_to root_path(error_code: 4, message: t("error.4")) unless authorizated_email?(userinfo["email"])
 

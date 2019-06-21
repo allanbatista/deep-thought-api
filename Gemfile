@@ -28,6 +28,7 @@ group :development, :test do
   gem 'rspec-rails', '~> 3.8'
   gem 'database_cleaner'
   gem 'codecov', :require => false
+  gem 'webmock'
 end
 
 group :development do
