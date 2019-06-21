@@ -1,6 +1,4 @@
-class Auth::SessionsController < ApplicationController
-  EMAIL_MATCH = Regexp.new(ENV['DEEP_THOUGHT__AUTH__EMAIL_DOMAIN_PATTERN'])
-  
+class Auth::SessionsController < ApplicationController  
   def google_sing_in
     redirect_to $google_oauth.oauth_url
   end
@@ -22,6 +20,10 @@ class Auth::SessionsController < ApplicationController
   private
 
   def authorizated_email?(email)
-    email.match(EMAIL_MATCH).present?
+    email.match(self.class.email_match).present?
+  end
+
+  def self.email_match
+    @email_match ||= Regexp.new(ENV['DEEP_THOUGHT__AUTH__EMAIL_DOMAIN_PATTERN'])
   end
 end

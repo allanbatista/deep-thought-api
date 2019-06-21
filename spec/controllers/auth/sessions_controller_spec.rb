@@ -28,5 +28,42 @@ RSpec.describe Auth::SessionsController, type: :controller do
       
       expect(User.count).to eq(0)
     end
+
+    context "MATCH" do
+      it "should refuse user when email not match" do
+        expect(Auth::SessionsController).to receive(:email_match) { Regexp.new(".*@google.com") }
+        
+        stub_request(:post, "https://www.googleapis.com/oauth2/v4/token")
+          .to_return(status: 200, body: '{"access_token": "fake_access_token"}')
+  
+        stub_request(:get, "https://www.googleapis.com/oauth2/v1/userinfo?access_token=fake_access_token&alt=json")
+          .to_return(status: 200, body: fixture('apis/google_oauth/userinfo.json'))
+  
+        expect(User.count).to eq(0)
+  
+        get :google_callback, params: { code: "123" }
+        expect(subject).to redirect_to("/?error_code=4&message=Authentication+Error+with+domain+email+not+authorized")
+        
+        expect(User.count).to eq(0)
+      end
+
+      it "should match email currect" do
+        expect_any_instance_of(User).to receive(:jwt) { "1" }
+        expect(Auth::SessionsController).to receive(:email_match) { Regexp.new(".*@allanbatista.com.br") }
+        
+        stub_request(:post, "https://www.googleapis.com/oauth2/v4/token")
+          .to_return(status: 200, body: '{"access_token": "fake_access_token"}')
+  
+        stub_request(:get, "https://www.googleapis.com/oauth2/v1/userinfo?access_token=fake_access_token&alt=json")
+          .to_return(status: 200, body: fixture('apis/google_oauth/userinfo.json'))
+  
+        expect(User.count).to eq(0)
+  
+        get :google_callback, params: { code: "123" }
+        expect(subject).to redirect_to("/?jwt=1")
+        
+        expect(User.count).to eq(1)
+      end
+    end
   end
 end
