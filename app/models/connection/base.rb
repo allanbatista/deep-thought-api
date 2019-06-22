@@ -6,12 +6,11 @@ module Connection
     store_in collection: 'connections'
   
     field :name, type: String
-    field :uri , type: String
   
     validates :name, presence: true, uniqueness: true
   
     def self.create_params
-      [:name, :uri]
+      [:name]
     end
   
     def type
