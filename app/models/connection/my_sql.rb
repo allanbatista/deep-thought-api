@@ -1,7 +1,7 @@
 module Connection
   class MySQL < Base
     field :host, type: String
-    field :port, type: String, default: 3306
+    field :port, type: Integer, default: 3306
     field :username, type: String
     field :password, type: String
 
