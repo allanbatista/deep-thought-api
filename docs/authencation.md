@@ -1,6 +1,8 @@
 # Authentication
 
-To configure Authentication is expect to set a fell env vars
+Authentication is required to perform anything with server. If not authenticated correct, expired or other thing. Is expected to receive 401 (or 403).
+
+**To configure Authentication is expect to set a fell env vars**
 
     DEEP_THOUGHT__PROTOCOL = http
     DEEP_THOUGHT__PORT = 3000
@@ -28,3 +30,14 @@ Example:
 
     GET /user
     Authentication: XXXX
+
+    status: 200
+    {
+        "id": "xxx",
+        "name": "xxx",
+        "email": "asasda",
+        "picture": "https://...",
+        "verified_email": true,
+        "created_at": "2019-06-22T22:31:11+00:00",
+        "updated_at": "2019-06-22T22:31:12+00:00"
+    }

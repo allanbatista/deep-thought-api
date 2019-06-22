@@ -10,3 +10,8 @@
     DEEP_THOUGHT__AUTH__GOOGLE_CLIENT_SECRET = # this is required
     DEEP_THOUGHT__AUTH__JWT_SECRET_KEY = random # every application restart it will be change
     DEEP_THOUGHT__AUTH__EMAIL_DOMAIN_PATTERN = .* # this permit configure only fell email pattern could login
+
+## DOCS
+
+docs/authentication.md
+docs/connections.md

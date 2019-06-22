@@ -12,7 +12,27 @@ module Connection
     end
 
     def self.create_params
-      [:name, :host, :port, :username, :password]
+      {
+        name: {
+          type: "string",
+          required: true
+        },
+        host: {
+          type: "string",
+          required: true
+        },
+        port: {
+          type: "interger",
+          required: true,
+          default: 3306
+        },
+        username: {
+          type: "string"
+        },
+        password: {
+          type: "string"
+        }
+      }
     end
   end
 end

@@ -39,7 +39,23 @@ class ConnectionsController < AuthenticatedApplicationController
 
   # DELETE /connections/1
   def destroy
-    @connection.destroy if @connection.present?
+    if @connection.present?
+      @connection.destroy
+
+      render nothing: true, status: 204
+    end
+  end
+
+  # GET /connections/types
+  def types
+    types = Connection::Base.descendants.map do |clazz|
+      {
+        type: clazz.type,
+        fields: clazz.create_params
+      }
+    end
+
+    render json: types
   end
 
   private
@@ -54,7 +70,11 @@ class ConnectionsController < AuthenticatedApplicationController
 
     # Only allow a trusted parameter "white list" through.
     def connection_params
-      params.permit(clazz.create_params)
+      if clazz.present?
+        params.permit(clazz.permit_params)
+      else
+        params.permit(@connection.class.permit_params)
+      end
     end
 
     def set_class_type
