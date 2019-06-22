@@ -1,8 +1,9 @@
-class ConnectionsController < ApplicationController
+class ConnectionsController < AuthenticatedApplicationController
   attr_reader :clazz
 
   before_action :set_class_type, only: [:create]
   before_action :set_connection, only: [:show, :update, :destroy]
+  before_action :ensure_connection, only: [:show, :update]
 
   # GET /connections
   def index
@@ -38,13 +39,17 @@ class ConnectionsController < ApplicationController
 
   # DELETE /connections/1
   def destroy
-    @connection.destroy
+    @connection.destroy if @connection.present?
   end
 
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_connection
-      @connection = clazz.find(params[:id])
+      @connection = Connection::Base.find(params[:id])
+    end
+
+    def ensure_connection
+      return render json: { message: "Not Found" }, status: 404 unless @connection.present?
     end
 
     # Only allow a trusted parameter "white list" through.

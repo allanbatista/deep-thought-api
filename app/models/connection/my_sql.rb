@@ -7,6 +7,10 @@ module Connection
 
     validates_presence_of :host, :port
 
+    def as_json(options={})
+      super(options.merge(except: [:password], methods: [:type]))
+    end
+
     def self.create_params
       [:name, :host, :port, :username, :password]
     end

@@ -14,7 +14,7 @@ module Connection
     end
   
     def type
-      self.class.name
+      self.class.name.split("::").last
     end
   end
 end
