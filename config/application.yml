@@ -1,7 +1,13 @@
 default: &default
+  TZ: UTC
   DEEP_THOUGHT__LOG_LEVEL: INFO
   DEEP_THOUGHT__RAILS_LOG_TO_STDOUT: true
   DEEP_THOUGHT__DB_URI: mongodb://localhost:27017/deep_thought
+  DEEP_THOUGHT__PROTOCOL: http
+  DEEP_THOUGHT__PORT: 3000
+  DEEP_THOUGHT__HOSTNAME: deepthought.localhost.com
+  DEEP_THOUGHT__AUTH__JWT_SECRET_KEY: <%= SecureRandom.urlsafe_base64(128) %>
+  DEEP_THOUGHT__AUTH__EMAIL_DOMAIN_PATTERN: .*
 test: &test
   <<: *default
   DEEP_THOUGHT__LOG_LEVEL: ERROR
