@@ -69,6 +69,14 @@ RSpec.describe "Namespaces", type: :request do
         }
       )
     end
+
+    it "should not create without name" do
+      post namespaces_path, {params: {namespace_id: Namespace.first.id.to_s}, headers: {"Authentication" => User.first.jwt}}
+
+      namespace = Namespace.last
+
+      expect(response).to have_http_status(422)
+    end
   end
 
   describe "PATCH /namespaces/:id" do
@@ -91,6 +99,12 @@ RSpec.describe "Namespaces", type: :request do
       patch namespace_path("NOT_FOUND"), {headers: {"Authentication" => User.first.jwt}}
 
       expect(response).to have_http_status(404)
+    end
+
+    it "should not update a namespace without name" do
+      patch namespace_path(Namespace.first.id.to_s), {params: {name: nil}, headers: {"Authentication" => User.first.jwt}}
+
+      expect(response).to have_http_status(422)
     end
   end
 end
