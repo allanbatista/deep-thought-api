@@ -8,6 +8,7 @@ default: &default
   DEEP_THOUGHT__HOSTNAME: deepthought.localhost.com
   DEEP_THOUGHT__AUTH__JWT_SECRET_KEY: <%= SecureRandom.urlsafe_base64(128) %>
   DEEP_THOUGHT__AUTH__EMAIL_DOMAIN_PATTERN: .*
+  DEEP_THOUGHT__AUTH__CALLBACK_ENDPOINT: http://deepthought.localhost.com/
 test: &test
   <<: *default
   DEEP_THOUGHT__LOG_LEVEL: ERROR

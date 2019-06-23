@@ -9,6 +9,7 @@ To configure Authentication is expect to set a fell env vars
     DEEP_THOUGHT__AUTH__GOOGLE_CLIENT_SECRET = # this is required
     DEEP_THOUGHT__AUTH__JWT_SECRET_KEY = random # every application restart it will be change
     DEEP_THOUGHT__AUTH__EMAIL_DOMAIN_PATTERN = .*
+    DEEP_THOUGHT__AUTH__CALLBACK_ENDPOINT = http://deepthought.localhost.com/ # callback endpoint after authentication
 
 Request authentication to:
 
