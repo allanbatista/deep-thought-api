@@ -1,6 +1,8 @@
 Rails.application.routes.draw do
   root "home#index"
 
+  resources :namespaces
+
   resources :connections do
     collection do
       get :types

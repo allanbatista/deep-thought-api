@@ -27,6 +27,7 @@ RSpec.configure do |config|
   config.use_transactional_fixtures = false
 
   config.before :each do
+    Rails.application.load_seed # loading seeds
     DatabaseCleaner.strategy = :truncation
     DatabaseCleaner.start
   end
