@@ -16,7 +16,7 @@ RSpec.describe UserController, type: :controller do
       get :show
 
       expect(JSON.parse(response.body)).to eq({
-        "_id"=>@user.id.to_s,
+        "id"=>@user.id.to_s,
         "created_at"=>"2019-01-01T00:00:00.000Z",
         "email"=>"allan@allanbatista.com.br",
         "name"=>nil,

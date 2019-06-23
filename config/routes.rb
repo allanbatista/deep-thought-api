@@ -1,6 +1,12 @@
 Rails.application.routes.draw do
   root "home#index"
 
+  resources :connections do
+    collection do
+      get :types
+    end
+  end
+
   scope :user, controller: :user do
     get '/', action: :show, as: :user
   end
