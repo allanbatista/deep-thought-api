@@ -29,12 +29,12 @@ RSpec.describe Auth::SessionsController, type: :controller do
       stub_request(:get, "https://www.googleapis.com/oauth2/v1/userinfo?access_token=fake_access_token&alt=json")
         .to_return(status: 200, body: fixture('apis/google_oauth/userinfo.json'))
 
-      expect(User.count).to eq(0)
+      expect(User.find_by(email: "allan@allanbatista.com.br")).to be_blank
 
       get :google_callback, params: { code: "123" }
       expect(subject).to redirect_to("https://custom.com/?jwt=1")
 
-      expect(User.count).to eq(1)
+      expect(User.find_by(email: "allan@allanbatista.com.br")).to be_persisted
     end
 
     it "should fail authenticate" do
