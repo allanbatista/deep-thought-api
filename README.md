@@ -1,3 +1,7 @@
+# Deep Thought
+
+Deep Thought is a project to make easy to create queries between diff data sources and create a beautiful visualizations.
+
 ## ENV VARS
 
     DEEP_THOUGHT__LOG_LEVEL = INFO # ERROR, WARNING, INFO, DEBUG
