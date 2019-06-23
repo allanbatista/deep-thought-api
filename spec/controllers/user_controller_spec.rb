@@ -25,5 +25,15 @@ RSpec.describe UserController, type: :controller do
       expect(response.status).to eq(401)
       expect(response.body).to eq('{"error_code":5,"message":"Authentication fail parse token"}')
     end
+
+    it "should fail auth when expire token" do
+      request.headers.merge!({ "Authentication" => User.first.jwt(1.seconds.from_now) })
+
+      sleep 1
+      get :show
+
+      expect(response.status).to eq(401)
+      expect(response.body).to eq('{"error_code":1,"message":"Authentication Expired"}')
+    end
   end
 end

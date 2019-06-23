@@ -123,6 +123,12 @@ RSpec.describe ConnectionsController, type: :controller do
       expect(response.status).to eq(404)
       expect(response.body).to eq('{"message":"Not Found"}')
     end
+
+    it "should not process entity" do
+      patch :update, params: { id: @mysql.id.to_s, name: "Base" }
+
+      expect(response.status).to eq(422)
+    end
   end
 
   context "#destroy" do
