@@ -1,6 +1,15 @@
 require 'rails_helper'
 
 RSpec.describe Auth::SessionsController, type: :controller do
+  context "GET /auth/sessions/google_sign_in" do
+    it "should redirect to google oauth" do
+      expect_any_instance_of(GoogleOauth).to receive(:client_id) { 'CLIENT_ID' }
+
+      get :google_sing_in
+      expect(subject).to redirect_to("https://accounts.google.com/o/oauth2/v2/auth?access_type=offline&client_id=CLIENT_ID&include_granted_scopes=true&prompt=select_account&redirect_uri=http%3A%2F%2Fdeepthought.localhost.com%3A3000%2Fauth%2Fsessions%2Fgoogle_callback&response_type=code&scope=email")
+    end
+  end
+
   context "GET /auth/sessions/google_callback" do
     it "should create and authenticate user" do
       expect_any_instance_of(User).to receive(:jwt) { "1" }
@@ -11,12 +20,12 @@ RSpec.describe Auth::SessionsController, type: :controller do
       stub_request(:get, "https://www.googleapis.com/oauth2/v1/userinfo?access_token=fake_access_token&alt=json")
         .to_return(status: 200, body: fixture('apis/google_oauth/userinfo.json'))
 
-      expect(User.count).to eq(0)
+      expect(User.find_by(email: "allan@allanbatista.com.br")).to be_blank
 
       get :google_callback, params: { code: "123" }
       expect(subject).to redirect_to("http://deepthought.localhost.com/?jwt=1")
       
-      expect(User.count).to eq(1)
+      expect(User.find_by(email: "allan@allanbatista.com.br")).to be_persisted
     end
 
     it "should create and authenticate user with custom redirect auth" do
@@ -29,12 +38,12 @@ RSpec.describe Auth::SessionsController, type: :controller do
       stub_request(:get, "https://www.googleapis.com/oauth2/v1/userinfo?access_token=fake_access_token&alt=json")
         .to_return(status: 200, body: fixture('apis/google_oauth/userinfo.json'))
 
-      expect(User.count).to eq(0)
+      expect(User.find_by(email: "allan@allanbatista.com.br")).to be_blank
 
       get :google_callback, params: { code: "123" }
       expect(subject).to redirect_to("https://custom.com/?jwt=1")
 
-      expect(User.count).to eq(1)
+      expect(User.find_by(email: "allan@allanbatista.com.br")).to be_persisted
     end
 
     it "should fail authenticate" do
@@ -44,7 +53,7 @@ RSpec.describe Auth::SessionsController, type: :controller do
       get :google_callback, params: { code: "123" }
       expect(subject).to redirect_to("/?error_code=3&message=Authentication+Google+Refused")
       
-      expect(User.count).to eq(0)
+      expect(User.find_by(email: "allan@allanbatista.com.br")).to be_blank
     end
 
     context "MATCH" do
@@ -57,12 +66,10 @@ RSpec.describe Auth::SessionsController, type: :controller do
         stub_request(:get, "https://www.googleapis.com/oauth2/v1/userinfo?access_token=fake_access_token&alt=json")
           .to_return(status: 200, body: fixture('apis/google_oauth/userinfo.json'))
   
-        expect(User.count).to eq(0)
-  
         get :google_callback, params: { code: "123" }
         expect(subject).to redirect_to("/?error_code=4&message=Authentication+Error+with+domain+email+not+authorized")
         
-        expect(User.count).to eq(0)
+        expect(User.find_by(email: "allan@allanbatista.com.br")).to be_blank
       end
 
       it "should match email currect" do
@@ -75,12 +82,12 @@ RSpec.describe Auth::SessionsController, type: :controller do
         stub_request(:get, "https://www.googleapis.com/oauth2/v1/userinfo?access_token=fake_access_token&alt=json")
           .to_return(status: 200, body: fixture('apis/google_oauth/userinfo.json'))
   
-        expect(User.count).to eq(0)
+          expect(User.find_by(email: "allan@allanbatista.com.br")).to be_blank
   
         get :google_callback, params: { code: "123" }
         expect(subject).to redirect_to("http://deepthought.localhost.com/?jwt=1")
         
-        expect(User.count).to eq(1)
+        expect(User.find_by(email: "allan@allanbatista.com.br")).to be_persisted
       end
     end
   end

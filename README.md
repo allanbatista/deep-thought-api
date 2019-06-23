@@ -1,3 +1,7 @@
+# Deep Thought
+
+Deep Thought is a project to make easy to create queries between diff data sources and create a beautiful visualizations.
+
 ## ENV VARS
 
     DEEP_THOUGHT__LOG_LEVEL = INFO # ERROR, WARNING, INFO, DEBUG
@@ -11,7 +15,7 @@
     DEEP_THOUGHT__AUTH__JWT_SECRET_KEY = random # every application restart it will be change
     DEEP_THOUGHT__AUTH__EMAIL_DOMAIN_PATTERN = .* # this permit configure only fell email pattern could login
 
-## DOCS
+## Documentations
 
-docs/authentication.md
-docs/connections.md
+[Authentication](docs/authentication.md)
+[Connections](docs/connections.md)

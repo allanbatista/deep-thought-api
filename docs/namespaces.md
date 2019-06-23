@@ -1,0 +1,64 @@
+# Namespaces
+
+Namespaces are used to organize connections, users and every resource created to be easy to manager.
+
+## API
+
+The API implements CRUD following RESTful.
+
+    GET /namespaces
+
+    status: 200
+    [
+        {
+            "created_at": "2019-06-23T20:07:44+00:00",
+            "name": "Global",
+            "namespace_id": null,
+            "updated_at": "2019-06-23T20:07:44+00:00",
+            "id": "5d0fdc100133c8746b91386e"
+        }
+    ]
+    
+    GET /namespaces/:id
+
+    status: 200
+    {
+        "created_at": "2019-06-23T20:07:44+00:00",
+        "name": "Global",
+        "namespace_id": null,
+        "updated_at": "2019-06-23T20:07:44+00:00",
+        "id": "5d0fdc100133c8746b91386e"
+    }
+
+    POST /namespaces
+    {
+        "name": "Developers",
+        "namespace_id": "5d0fdc100133c8746b91386e" # namespace parent
+    }
+
+    status: 201
+    {
+        "created_at": "2019-06-23T20:07:44+00:00",
+        "name": "Developers",
+        "namespace_id": "5d0fdc100133c8746b91386e",
+        "updated_at": "2019-06-23T20:07:44+00:00",
+        "id": "xxx"
+    }
+
+    PATCH /namespaces/:id
+    {
+        "name": "Super Global"
+    }
+
+    status: 200
+    {
+        "created_at": "2019-06-23T20:07:44+00:00",
+        "name": "Super Global",
+        "namespace_id": null,
+        "updated_at": "2019-06-23T20:07:44+00:00",
+        "id": "5d0fdc100133c8746b91386e"
+    }
+
+    DELETE /namespaces/:id
+    
+    status: 204

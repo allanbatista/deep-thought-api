@@ -1,27 +1,19 @@
 require 'rails_helper'
 
 RSpec.describe UserController, type: :controller do
-  before do
-    Timecop.freeze(Time.local(2019))
-    @user = User.create(email: "allan@allanbatista.com.br")
-  end
-
-  after do
-    Timecop.return
-  end
 
   context "GET /user" do
     it "should get user" do
-      request.headers.merge!({ "Authentication" => @user.jwt })
+      request.headers.merge!({ "Authentication" =>  User.first.jwt })
       get :show
 
       expect(JSON.parse(response.body)).to eq({
-        "id"=>@user.id.to_s,
-        "created_at"=>"2019-01-01T00:00:00.000Z",
-        "email"=>"allan@allanbatista.com.br",
+        "id"=> User.first.id.to_s,
+        "created_at"=> User.first.created_at.to_s,
+        "email"=> User.first.email,
         "name"=>nil,
         "picture"=>nil,
-        "updated_at"=>"2019-01-01T00:00:00.000Z",
+        "updated_at"=>User.first.updated_at.to_s,
         "verified_email"=>nil
       })
     end
@@ -32,6 +24,16 @@ RSpec.describe UserController, type: :controller do
 
       expect(response.status).to eq(401)
       expect(response.body).to eq('{"error_code":5,"message":"Authentication fail parse token"}')
+    end
+
+    it "should fail auth when expire token" do
+      request.headers.merge!({ "Authentication" => User.first.jwt(1.seconds.from_now) })
+
+      sleep 1
+      get :show
+
+      expect(response.status).to eq(401)
+      expect(response.body).to eq('{"error_code":1,"message":"Authentication Expired"}')
     end
   end
 end
