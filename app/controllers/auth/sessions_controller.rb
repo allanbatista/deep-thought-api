@@ -10,7 +10,7 @@ class Auth::SessionsController < ApplicationController
       return redirect_to root_path(error_code: 4, message: I18n.t("error.4")) unless authorizated_email?(userinfo["email"])
 
       user = User.create_or_update_by_google_oauth(userinfo)
-      return redirect_to(root_path(jwt: user.jwt))
+      return redirect_to(build_callback_url(user.jwt))
     end
   
   rescue => e
@@ -25,5 +25,13 @@ class Auth::SessionsController < ApplicationController
 
   def self.email_match
     @email_match ||= Regexp.new(ENV['DEEP_THOUGHT__AUTH__EMAIL_DOMAIN_PATTERN'])
+  end
+
+  def build_callback_url(jwt)
+    "#{endpoint_callback}?jwt=#{jwt}"
+  end
+
+  def endpoint_callback
+    ENV['DEEP_THOUGHT__AUTH__CALLBACK_ENDPOINT']
   end
 end
