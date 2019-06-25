@@ -57,10 +57,4 @@ class NamespacePermissionsController < AuthenticatedApplicationController
         return render json: { message: "permission not found" }, status: 404
       end
     end
-
-    def validate_authorization!
-      unless @namespace.permissions_for(current_user).include?("owner")
-        return render json: { message: "only owner could manager namespace permissions" }, status: 403
-      end
-    end
 end

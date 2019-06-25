@@ -16,6 +16,8 @@ class Namespace
   end
 
   def permissions_for(user)
-    NamespacePermission.where(user: user, :namespace_id.in => namespaces.pluck(:_id)).pluck(:permissions).flatten.uniq
+    permissions = NamespacePermission.where(user: user, :namespace_id.in => namespaces.pluck(:_id))    
+    return permissions.pluck(:permissions).flatten.uniq if permissions.present?
+    []
   end
 end

@@ -1,6 +1,6 @@
 class NamespacesController < AuthenticatedApplicationController
   before_action :set_namespace, only: [:show, :update, :destroy]
-  before_action :ensure_namespace, only: [:show, :update]
+  before_action :validate_authorization!, only: [:update, :destroy]
 
   # GET /namespaces
   def index
@@ -45,10 +45,10 @@ class NamespacesController < AuthenticatedApplicationController
     # Use callbacks to share common setup or constraints between actions.
     def set_namespace
       @namespace = Namespace.find(params[:id])
-    end
 
-    def ensure_namespace
-      return render json: {message: "Not Found"}, status: 404 if @namespace.blank?
+      unless @namespace.present?
+        return render json: { message: "namespace not found" }, status: 404
+      end
     end
 
     # Only allow a trusted parameter "white list" through.
