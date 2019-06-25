@@ -19,6 +19,8 @@ class NamespacesController < AuthenticatedApplicationController
     @namespace = Namespace.new(namespace_params)
 
     if @namespace.save
+      @namespace.permissions.create(user: current_user, permissions: ["owner"])
+
       render json: @namespace, status: :created, location: @namespace
     else
       render json: @namespace.errors, status: :unprocessable_entity

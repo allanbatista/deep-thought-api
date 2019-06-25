@@ -68,6 +68,9 @@ RSpec.describe "Namespaces", type: :request do
           "id"=>namespace.id.to_s
         }
       )
+
+      expect(namespace.permissions.first.user).to eq(User.first)
+      expect(namespace.permissions.first.permissions).to eq(["owner"])
     end
 
     it "should not create without name" do
