@@ -1,7 +1,9 @@
 Rails.application.routes.draw do
   root "home#index"
 
-  resources :namespaces
+  resources :namespaces do
+    resources :permissions, controller: :namespace_permissions
+  end
 
   resources :connections do
     collection do
