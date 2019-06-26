@@ -51,7 +51,7 @@ RSpec.describe Auth::SessionsController, type: :controller do
         .to_return(status: 400, body: '{"message": "error"}')
 
       get :google_callback, params: { code: "123" }
-      expect(subject).to redirect_to("/?error_code=3&message=Authentication+Google+Refused")
+      expect(subject).to redirect_to("http://deepthought.localhost.com/?error_code=3&message=Authentication+Google+Refused")
       
       expect(User.find_by(email: "allan@allanbatista.com.br")).to be_blank
     end
@@ -67,7 +67,7 @@ RSpec.describe Auth::SessionsController, type: :controller do
           .to_return(status: 200, body: fixture('apis/google_oauth/userinfo.json'))
   
         get :google_callback, params: { code: "123" }
-        expect(subject).to redirect_to("/?error_code=4&message=Authentication+Error+with+domain+email+not+authorized")
+        expect(subject).to redirect_to("http://deepthought.localhost.com/?error_code=4&message=Authentication+Error+with+domain+email+not+authorized")
         
         expect(User.find_by(email: "allan@allanbatista.com.br")).to be_blank
       end

@@ -18,7 +18,7 @@ class NamespacePermission
 
   def validate_permissions!
     unkown_permission = self.permissions - PERMISSIONS
-    if unkown_permission.any?
+    unless unkown_permission.blank?
       errors.add(:permissions, "#{unkown_permission.join(",")} permissions not permisted")
     end
   end

@@ -36,15 +36,15 @@ RSpec.describe "NamespacePermissinos", type: :request do
     it "should not list anything without a namespace" do
       get namespace_permissions_path("NOT_FOUND"), {headers: {"Authentication" => @user.jwt}}
 
-      expect(response).to have_http_status(404)
-      expect(response.body).to eq("{\"message\":\"namespace not found\"}")
+      expect(response).to have_http_status(403)
+      expect(response.body).to eq("{\"message\":\"namespace is required\"}")
     end
 
     it "should not do nothing with permissions with is not owner" do
       get namespace_permissions_path(@namespace_global), {headers: {"Authentication" => @user.jwt}}
 
       expect(response).to have_http_status(403)
-      expect(response.body).to eq("{\"message\":\"only owner could manager namespace permissions\"}")
+      expect(response.body).to eq("{\"message\":\"user has no enough permission to this namespace to execute this action\"}")
     end
 
     it "should inherit permissions from parent namespace" do

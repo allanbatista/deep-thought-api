@@ -7,7 +7,7 @@ class Namespace
 
   field :name, type: String
 
-  validates :name, presence: true, uniqueness: true
+  validates :name, presence: true, uniqueness: { scope: [:namespace_id] }
 
   def namespaces
     nps = [self]

@@ -20,6 +20,13 @@ RSpec.describe "Namespaces", type: :request do
           "namespace_id"=>nil,
           "updated_at"=>@namespace.updated_at.to_s,
           "id"=>@namespace.id.to_s
+        },
+        {
+          "created_at"=>@user.namespace.created_at.to_s,
+          "name"=>"user@example.com",
+          "namespace_id"=>nil,
+          "updated_at"=>@user.namespace.updated_at.to_s,
+          "id"=>@user.namespace.id.to_s
         }
       ])
     end
@@ -62,7 +69,7 @@ RSpec.describe "Namespaces", type: :request do
     it "should create a new namespace" do
       post namespaces_path, {params: {name: "developers", namespace_id: @namespace.id.to_s}, headers: {"Authentication" => @user.jwt}}
 
-      namespace = Namespace.last
+      namespace = Namespace.find_by(name: "developers")
 
       expect(response).to have_http_status(201)
       expect(JSON.parse(response.body)).to eq(

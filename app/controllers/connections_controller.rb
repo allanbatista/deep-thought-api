@@ -1,13 +1,12 @@
-class ConnectionsController < AuthenticatedApplicationController
+class ConnectionsController < NamespaceAuthenticatedApplicationController
   attr_reader :clazz
 
   before_action :set_class_type, only: [:create]
   before_action :set_connection, only: [:show, :update, :destroy]
-  before_action :ensure_connection, only: [:show, :update]
 
   # GET /connections
   def index
-    @connections = Connection::Base.all
+    @connections = Connection::Base.where(namespace_id: @namespace)
 
     render json: @connections
   end
@@ -20,6 +19,7 @@ class ConnectionsController < AuthenticatedApplicationController
   # POST /connections
   def create
     @connection = clazz.new(connection_params)
+    @connection.namespace ||= current_user.namespace
 
     if @connection.save
       render json: @connection, status: :created, location: connection_path(@connection)
@@ -61,11 +61,11 @@ class ConnectionsController < AuthenticatedApplicationController
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_connection
-      @connection = Connection::Base.find(params[:id])
-    end
+      @connection = Connection::Base.find_by(_id: params[:id], namespace: @namespace)
 
-    def ensure_connection
-      return render json: { message: "Not Found" }, status: 404 unless @connection.present?
+      unless @connection.present?
+        return render json: { message: "Not Found" }, status: 404 unless @connection.present?
+      end
     end
 
     # Only allow a trusted parameter "white list" through.

@@ -1,21 +1,19 @@
-class NamespacePermissionsController < AuthenticatedApplicationController
-  before_action :set_namespace
-  before_action :validate_authorization!
+class NamespacePermissionsController < NamespaceAuthenticatedApplicationController
   before_action :set_namespace_permission, only: [:show, :update, :destroy]
 
-  # GET /namespace_permissions
+  # GET /namespaces/:namespace_id/permissions
   def index
     @namespace_permissions = NamespacePermission.where(namespace: @namespace)
 
     render json: @namespace_permissions
   end
 
-  # GET /namespace_permissions/1
+  # GET /namespaces/:namespace_id/permissions/:id
   def show
     render json: @namespace_permission
   end
 
-  # POST /namespace_permissions
+  # POST /namespaces/:namespace_id/permissions
   def create
     @namespace_permission = @namespace.permissions.new(params.permit(:user_id, :permissions => []))
     
@@ -26,7 +24,7 @@ class NamespacePermissionsController < AuthenticatedApplicationController
     end
   end
 
-  # PATCH/PUT /namespace_permissions/1
+  # PATCH/PUT /namespaces/:namespace_id/permissions/:id
   def update
     if @namespace_permission.update(params.permit(:permissions => []))
       render json: @namespace_permission
@@ -35,20 +33,18 @@ class NamespacePermissionsController < AuthenticatedApplicationController
     end
   end
 
-  # DELETE /namespace_permissions/1
+  # DELETE /namespaces/:namespace_id/permissions/:id
   def destroy
     @namespace_permission.destroy if @namespace_permission.present?
   end
 
+  protected
+
+  def minimum_required
+    "owner"
+  end
+
   private
-    def set_namespace
-      @namespace = Namespace.find(params[:namespace_id])
-
-      unless @namespace.present?
-        return render json: { message: "namespace not found" }, status: 404
-      end
-    end
-
     # Use callbacks to share common setup or constraints between actions.
     def set_namespace_permission
       @namespace_permission = @namespace.permissions.find_by(_id: params[:id])

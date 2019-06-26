@@ -1,6 +1,6 @@
 class NamespacesController < AuthenticatedApplicationController
   before_action :set_namespace, only: [:show, :update, :destroy]
-  before_action :validate_authorization!, only: [:update, :destroy]
+  before_action :authorizate_owner!, only: [:update, :destroy]
 
   # GET /namespaces
   def index
@@ -16,7 +16,7 @@ class NamespacesController < AuthenticatedApplicationController
 
   # POST /namespaces
   def create
-    @namespace = Namespace.new(namespace_params)
+    @namespace = Namespace.new(params.permit(:namespace_id, :name))
 
     if @namespace.save
       @namespace.permissions.create(user: current_user, permissions: ["owner"])
@@ -29,7 +29,7 @@ class NamespacesController < AuthenticatedApplicationController
 
   # PATCH/PUT /namespaces/1
   def update
-    if @namespace.update(namespace_params)
+    if @namespace.update(params.permit(:namespace_id, :name))
       render json: @namespace
     else
       render json: @namespace.errors, status: :unprocessable_entity
@@ -51,8 +51,9 @@ class NamespacesController < AuthenticatedApplicationController
       end
     end
 
-    # Only allow a trusted parameter "white list" through.
-    def namespace_params
-      params.permit(:name, :namespace_id)
+    def authorizate_owner!
+      unless @namespace.present? && @namespace.permissions_for(current_user).include?("owner")
+        return render json: { message: "only owner could manager this resource" }, status: 403
+      end
     end
 end

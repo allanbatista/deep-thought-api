@@ -9,6 +9,8 @@ class User
   field :verified_email, type: Boolean
   field :picture, type: String
 
+  after_create :create_user_namespace
+
   validates :email, presence: true, uniqueness: true
 
   def jwt(exp = 24.hours.from_now)
@@ -32,5 +34,14 @@ class User
     user = User.create(userinfo.slice("name", "email", "verified_email", "picture"))
 
     return user if user.persisted?
+  end
+
+  def namespace
+    @namespace ||= Namespace.find_by(name: email)
+  end
+
+  def create_user_namespace
+    nsp = Namespace.create(name: self.email)
+    permissions.create(namespace: nsp, permissions: ['owner'])
   end
 end
