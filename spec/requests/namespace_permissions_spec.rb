@@ -160,5 +160,12 @@ RSpec.describe "NamespacePermissinos", type: :request do
 
       expect(response).to have_http_status(404)
     end
+
+    it "should not update permissions with invalid permission" do
+      patch namespace_permission_path(@permission_sub.namespace, @permission_sub), {params: {permissions: ['invalid_permission', 'creator']}, headers: {"Authentication" => @user.jwt}}
+
+      expect(response).to have_http_status(422)
+      expect(response.body).to eq('{"permissions":["invalid_permission permissions not permisted"]}')
+    end
   end
 end

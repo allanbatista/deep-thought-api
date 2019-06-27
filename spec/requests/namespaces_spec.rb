@@ -63,6 +63,14 @@ RSpec.describe "Namespaces", type: :request do
 
       expect(Namespace.find(@namespace.id)).to be_blank
     end
+
+    it "should not delete a namespace when user is not a owner" do
+      @permission.destroy
+
+      delete namespace_path(@namespace), {headers: {"Authentication" => @user.jwt}}
+
+      expect(response).to have_http_status(403)
+    end
   end
 
   describe "POST /namespaces" do
@@ -121,6 +129,14 @@ RSpec.describe "Namespaces", type: :request do
       patch namespace_path(@namespace.id.to_s), {params: {name: nil}, headers: {"Authentication" => @user.jwt}}
 
       expect(response).to have_http_status(422)
+    end
+
+    it "should not update a namespace when user is not a owner" do
+      @permission.destroy
+
+      patch namespace_path(@namespace.id.to_s), {params: {name: "developers"}, headers: {"Authentication" => @user.jwt}}
+
+      expect(response).to have_http_status(403)
     end
   end
 end

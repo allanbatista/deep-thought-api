@@ -14,7 +14,8 @@ module Connection
     def self.permit_params
       create_params.keys + [:namespace_id]
     end
-  
+    
+    # :nocov:
     def self.create_params
       {
         name: {
@@ -23,6 +24,7 @@ module Connection
         }
       }
     end
+    # :nocov:
 
     def self.type
       name.split("::").last
