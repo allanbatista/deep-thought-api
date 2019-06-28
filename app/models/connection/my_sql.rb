@@ -34,5 +34,21 @@ module Connection
         }
       }
     end
+
+    def execute(sql)
+      Result::MySQL.new(client.query(sql))
+    end
+
+    private
+
+    def client
+      Mysql2::Client.new({
+        host: host,
+        port: port,
+        username: username,
+        password: password,
+        database: database
+      })
+    end
   end
 end
