@@ -66,14 +66,14 @@ RSpec.describe ConnectionsController, type: :request do
       get connection_path("NOT FOUND"), headers: {"Authentication" => @user.jwt}
 
       expect(response.status).to eq(404)
-      expect(response.body).to eq('{"message":"Not Found"}')
+      expect(response.body).to eq("{\"message\":\"Not Found\",\"code\":201}")
     end
 
     it "not found connection when user has no namespace permission" do
       get connection_path(@base), headers: {"Authentication" => @user.jwt}
 
       expect(response.status).to eq(404)
-      expect(response.body).to eq('{"message":"Not Found"}')
+      expect(response.body).to eq("{\"message\":\"Not Found\",\"code\":201}")
     end
   end
 
@@ -132,14 +132,14 @@ RSpec.describe ConnectionsController, type: :request do
       post connections_path, params: { name: "NEW MySQL", host: "localhost" }, headers: {"Authentication" => @user.jwt}
       
       expect(response.status).to eq(422)
-      expect(response.body).to eq('{"message":"type is required"}')
+      expect(response.body).to eq("{\"message\":\"Required type\",\"code\":301}")
     end
 
     it "should not create without a required params" do
       post connections_path, params: { name: "NEW MySQL", type: "MySQL" }, headers: {"Authentication" => @user.jwt}
       
       expect(response.status).to eq(422)
-      expect(response.body).to eq('{"host":["can\'t be blank"]}')
+      expect(response.body).to eq("{\"message\":\"Unprocessable Entity\",\"code\":202,\"errors\":{\"host\":[\"can't be blank\"]}}")
     end
   end
 
@@ -156,7 +156,7 @@ RSpec.describe ConnectionsController, type: :request do
       patch connection_path(:NOT_FOUND), params: { name: "MYSQL NAME 2" }, headers: {"Authentication" => @user.jwt}
 
       expect(response.status).to eq(404)
-      expect(response.body).to eq('{"message":"Not Found"}')
+      expect(response.body).to eq("{\"message\":\"Not Found\",\"code\":201}")
     end
 
     it "should not process entity" do

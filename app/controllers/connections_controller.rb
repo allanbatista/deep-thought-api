@@ -24,7 +24,7 @@ class ConnectionsController < NamespaceAuthenticatedApplicationController
     if @connection.save
       render json: @connection, status: :created, location: connection_path(@connection)
     else
-      render json: @connection.errors, status: :unprocessable_entity
+      render json: e("http.unprocessable_entity", errors: @connection.errors), status: :unprocessable_entity
     end
   end
 
@@ -33,17 +33,13 @@ class ConnectionsController < NamespaceAuthenticatedApplicationController
     if @connection.update(connection_params)
       render json: @connection
     else
-      render json: @connection.errors, status: :unprocessable_entity
+      render json: e("http.unprocessable_entity", errors: @connection.errors), status: :unprocessable_entity
     end
   end
 
   # DELETE /connections/1
   def destroy
-    if @connection.present?
-      @connection.destroy
-
-      render nothing: true, status: 204
-    end
+    @connection.destroy
   end
 
   # GET /connections/types
@@ -64,7 +60,7 @@ class ConnectionsController < NamespaceAuthenticatedApplicationController
       @connection = Connection::Base.find_by(_id: params[:id], namespace: @namespace)
 
       unless @connection.present?
-        return render json: { message: "Not Found" }, status: 404 unless @connection.present?
+        return render json: e("http.not_found"), status: 404 unless @connection.present?
       end
     end
 
@@ -81,7 +77,7 @@ class ConnectionsController < NamespaceAuthenticatedApplicationController
       if params[:type].present?
         @clazz ||= ["Connection", params[:type]].join("::").constantize
       else
-        render json: {message: "type is required"}, status: :unprocessable_entity
+        render json: e("connections.required_type"), status: :unprocessable_entity
       end
     end
 end

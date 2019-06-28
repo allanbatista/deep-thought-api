@@ -23,7 +23,7 @@ class NamespacesController < AuthenticatedApplicationController
 
       render json: @namespace, status: :created, location: @namespace
     else
-      render json: @namespace.errors, status: :unprocessable_entity
+      render json: e("http.unprocessable_entity", errors: @namespace.errors), status: :unprocessable_entity
     end
   end
 
@@ -32,7 +32,7 @@ class NamespacesController < AuthenticatedApplicationController
     if @namespace.update(params.permit(:namespace_id, :name))
       render json: @namespace
     else
-      render json: @namespace.errors, status: :unprocessable_entity
+      render json: e("http.unprocessable_entity", errors: @namespace.errors), status: :unprocessable_entity
     end
   end
 
@@ -47,13 +47,13 @@ class NamespacesController < AuthenticatedApplicationController
       @namespace = Namespace.find(params[:id])
 
       unless @namespace.present?
-        return render json: { message: "namespace not found" }, status: 404
+        return render json: e("http.not_found"), status: 404
       end
     end
 
     def authorizate_owner!
       unless @namespace.present? && @namespace.permissions_for(current_user).include?("owner")
-        return render json: { message: "only owner could manager this resource" }, status: 403
+        return render json: e("authorization.only_owner"), status: 403
       end
     end
 end

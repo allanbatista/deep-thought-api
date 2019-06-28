@@ -20,7 +20,7 @@ class NamespacePermissionsController < NamespaceAuthenticatedApplicationControll
     if @namespace_permission.save
       render json: @namespace_permission, status: :created, location: namespace_permission_path(@namespace, @namespace_permission)
     else
-      render json: @namespace_permission.errors, status: :unprocessable_entity
+      render json: e("http.unprocessable_entity", errors: @namespace_permission.errors), status: :unprocessable_entity
     end
   end
 
@@ -29,13 +29,13 @@ class NamespacePermissionsController < NamespaceAuthenticatedApplicationControll
     if @namespace_permission.update(params.permit(:permissions => []))
       render json: @namespace_permission
     else
-      render json: @namespace_permission.errors, status: :unprocessable_entity
+      render json: e("http.unprocessable_entity", errors: @namespace_permission.errors), status: :unprocessable_entity
     end
   end
 
   # DELETE /namespaces/:namespace_id/permissions/:id
   def destroy
-    @namespace_permission.destroy if @namespace_permission.present?
+    @namespace_permission.destroy
   end
 
   protected

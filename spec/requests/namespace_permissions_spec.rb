@@ -165,7 +165,7 @@ RSpec.describe "NamespacePermissinos", type: :request do
       patch namespace_permission_path(@permission_sub.namespace, @permission_sub), {params: {permissions: ['invalid_permission', 'creator']}, headers: {"Authentication" => @user.jwt}}
 
       expect(response).to have_http_status(422)
-      expect(response.body).to eq('{"permissions":["invalid_permission permissions not permisted"]}')
+      expect(response.body).to eq("{\"message\":\"Unprocessable Entity\",\"code\":202,\"errors\":{\"permissions\":[\"invalid_permission permissions not permisted\"]}}")
     end
   end
 end

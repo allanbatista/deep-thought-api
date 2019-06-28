@@ -7,14 +7,15 @@ class Auth::SessionsController < ApplicationController
     userinfo = $google_oauth.userinfo($google_oauth.get_access_token(params[:code]))
     
     if userinfo.present?
-      return redirect_to build_callback_url(error_code: 4, message: I18n.t("error.4")) unless authorizated_email?(userinfo["email"])
+      return redirect_to build_callback_url(e("sessions.invalid_email")) unless authorizated_email?(userinfo["email"])
 
       user = User.create_or_update_by_google_oauth(userinfo)
       return redirect_to(build_callback_url(jwt: user.jwt))
     end
   
+    redirect_to build_callback_url(e("sessions.oauth_refused"))
   rescue => e
-    redirect_to build_callback_url(error_code: 3, message: I18n.t("error.3"))
+    redirect_to build_callback_url(e("sessions.oauth_refused"))
   end
 
   private
