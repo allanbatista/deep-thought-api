@@ -46,7 +46,19 @@ RSpec.describe Auth::SessionsController, type: :controller do
       expect(User.find_by(email: "allan@allanbatista.com.br")).to be_persisted
     end
 
-    it "should fail authenticate" do
+    it "should fail authenticate with exception" do
+      stub_request(:post, "https://www.googleapis.com/oauth2/v4/token")
+        .to_return(status: 200, body: '{}')
+
+      expect($google_oauth).to receive(:userinfo) { raise StandardError.new("UNK") }
+
+      get :google_callback, params: { code: "123" }
+      expect(subject).to redirect_to("http://deepthought.localhost.com/?code=106&message=Exception+error")
+      
+      expect(User.find_by(email: "allan@allanbatista.com.br")).to be_blank
+    end
+
+    it "should fail authenticate with not found a userinfo" do
       stub_request(:post, "https://www.googleapis.com/oauth2/v4/token")
         .to_return(status: 400, body: '{"message": "error"}')
 

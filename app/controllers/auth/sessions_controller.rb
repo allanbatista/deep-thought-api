@@ -12,10 +12,11 @@ class Auth::SessionsController < ApplicationController
       user = User.create_or_update_by_google_oauth(userinfo)
       return redirect_to(build_callback_url(jwt: user.jwt))
     end
-  
+
+  rescue GoogleOauth::AuthenticationError => e
     redirect_to build_callback_url(e("sessions.oauth_refused"))
   rescue => e
-    redirect_to build_callback_url(e("sessions.oauth_refused"))
+    redirect_to build_callback_url(e("sessions.exception"))
   end
 
   private

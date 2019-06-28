@@ -46,6 +46,9 @@ en:
       invalid_token:
         message: Invalid Token
         code: 105
+      exception:
+        message: Exception error
+        code: 106
     http:
       not_found:
         message: Not Found
