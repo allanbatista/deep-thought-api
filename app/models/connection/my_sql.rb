@@ -4,8 +4,11 @@ module Connection
     field :port, type: Integer, default: 3306
     field :username, type: String
     field :password, type: String
+    field :database, type: String
 
     validates_presence_of :host, :port
+
+    validate :database_connect!
 
     def as_json(options={})
       super(options.merge(except: [:password], methods: [:type]))
@@ -35,20 +38,14 @@ module Connection
       }
     end
 
-    def execute(sql)
-      Result::MySQL.new(client.query(sql))
+    def database_connect!
+      unless client.connect?
+        errors.add(:database_connection, "can't connect to database")
+      end
     end
 
-    private
-
     def client
-      Mysql2::Client.new({
-        host: host,
-        port: port,
-        username: username,
-        password: password,
-        database: database
-      })
+      @client ||= Connection::Adapter::MySQL.new({ host: host, port: port, username: username, password: password, database: database })
     end
   end
 end
