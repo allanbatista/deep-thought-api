@@ -18,4 +18,24 @@ class Query
 
   validates :sql, presence: true
   validates :status, presence: true, inclusion: { in: ["none", "enqueued", "running", "done"] }
+
+  after_create :enqueue_executor!
+
+  def start!
+    update_attributes!(started_at: DateTime.now, status: "running")
+  end
+
+  def finish_with_success!(result)
+    update_attributes!(finished_at: DateTime.now, status: "done", result: result, success: true)
+  end
+
+  def finish_with_error!(message)
+    update_attributes!(finished_at: DateTime.now, status: "done", message: message, success: false)
+  end
+
+  private
+
+  def enqueue_executor!
+    QueryExecutorWorker.enqueue(id.to_s)
+  end
 end

@@ -44,7 +44,8 @@ class Consumer
       start_time = Time.now
 
       begin
-        yield(payload) if payload.to_s.strip.present?
+        data = JSON.parse(payload)
+        data["class_name"].constantize.new(*data["arguments"]).execute!
         channel.ack(delivery_info.delivery_tag)
         
         Rails.logger.info({ elapse_ms: time_diff_milli(start_time, Time.now), label: :ack })

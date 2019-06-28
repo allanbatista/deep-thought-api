@@ -2,12 +2,12 @@ module Worker
   extend ActiveSupport::Concern
 
   included do
-    def initialize(payload)
-      @payload = payload
+    def initialize(arguments)
+      @arguments = arguments
     end
 
     def execute
-      perform(payload)
+      perform(arguments)
     end
   end
 
@@ -40,8 +40,8 @@ module Worker
       options.fetch(:max_retries, 10)
     end
 
-    def enqueue(*args)
-      client.enqueue({ class_name: name })
+    def enqueue(*arguments)
+      client.enqueue({ class_name: name, arguments: arguments })
     end
 
     def client

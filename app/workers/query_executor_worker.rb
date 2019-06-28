@@ -10,11 +10,16 @@ class QueryExecutorWorker
 
   def run(query)
     filename = "/tmp/#{id}.tsv"
-    query_result = query.connection.execute(sql)
-    query_result.to_tsv(filename)
-    query.update(result: filename, status: "done")
+    query.start!
+
+    query.connection.client.execute(sql) do |result|
+      query_result = query.connection.execute(sql)
+      query_result.to_tsv(filename)
+    end
+
+    query.finish_with_success!(File.new(filename))
   rescue => e
-    query.update(status: "fail", message: "#{e.to_s}\n#{e.backtrace.join("\n")}")
+    query.finish_with_error!("#{e.to_s}\n#{e.backtrace[1..10].join("\n")}")
   ensure
     File.delete(filename) if File.exist?(filename)
   end

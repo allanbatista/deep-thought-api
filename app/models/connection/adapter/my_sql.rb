@@ -7,15 +7,17 @@ class Connection::Adapter::MySQL < Connection::Adapter::Base
     return false
   end
 
-  def new_connection
-    Mysql2::Client.new(connection_params)
-  end
-
   def execute(sql)
     connection = new_connection()
     result = Connection::Result::MySQL.new(connection.query(sql))
     yield(result)
   ensure
     connection.close
+  end
+
+  private
+
+  def new_connection
+    Mysql2::Client.new(connection_params)
   end
 end
