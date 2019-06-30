@@ -17,5 +17,8 @@ Deep Thought is a project to make easy to create queries between diff data sourc
 
 ## Documentations
 
-[Authentication](docs/authentication.md)
-[Connections](docs/connections.md)
+Documentation by resources:
+
+* [Authentication](docs/authentication.md)
+* [Namespaces](docs/namespaces.md)
+* [Connections](docs/connections.md)

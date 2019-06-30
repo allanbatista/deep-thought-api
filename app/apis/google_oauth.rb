@@ -1,6 +1,9 @@
 class GoogleOauth
   attr_reader :client_id, :secret_id, :callback_url
 
+  class AuthenticationError < StandardError
+  end
+
   def initialize(client_id, secret_id, callback_url)
     @client_id = client_id
     @secret_id = secret_id
@@ -35,7 +38,7 @@ class GoogleOauth
       f.body = URI.encode_www_form(data)
     end
     
-    raise StandardError.new(response.body) if response.status >= 400
+    raise AuthenticationError.new(response.body) if response.status >= 400
     
     JSON.parse(response.body)['access_token']
   end
@@ -43,7 +46,7 @@ class GoogleOauth
   def userinfo(access_token)
     response = Faraday.get("https://www.googleapis.com/oauth2/v1/userinfo?alt=json&access_token=#{access_token}")
 
-    raise StandardError.new(response.body) if response.status >= 400
+    raise AuthenticationError.new(response.body) if response.status >= 400
 
     JSON.parse(response.body)
   end

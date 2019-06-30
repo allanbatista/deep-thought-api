@@ -6,6 +6,10 @@ A connection represents how a application will connection to a database. This co
 
 A connection has a complete CRUD endpoint following a rest convension.
 
+Query Params:
+
+    ?namespace=xxx if not defined, will use user namespace as default
+
     GET /connections/types # retrive a connections types metadata information
     
     status: 200
@@ -44,6 +48,7 @@ A connection has a complete CRUD endpoint following a rest convension.
         "host": "localhost",
         "port": 3306,
         "username": nil,
+        "namespace_id": "xxx",
         "created_at": "2019-06-22T22:31:11+00:00",
         "updated_at": "2019-06-22T22:31:12+00:00"
     }
@@ -58,13 +63,14 @@ A connection has a complete CRUD endpoint following a rest convension.
         "host": "localhost",
         "port": 3306,
         "username": nil,
+        "namespace_id": "xxx",
         "created_at": "2019-06-22T22:31:11+00:00",
         "updated_at": "2019-06-22T22:31:12+00:00"
     }
 
     PATCH /connections/:id # update a model
     {
-        "name": "NEW MYSQL 2"
+        "name": "NEW MYSQL 2", "namespace_id": "yyy"
     }
 
     status: 200
@@ -75,6 +81,7 @@ A connection has a complete CRUD endpoint following a rest convension.
         "host": "localhost",
         "port": 3306,
         "username": nil,
+        "namespace_id": "yyy",
         "created_at": "2019-06-22T22:31:11+00:00",
         "updated_at": "2019-06-22T22:31:12+00:00"
     }

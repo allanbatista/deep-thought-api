@@ -2,10 +2,14 @@ class User
   include Mongoid::Document
   include Mongoid::Timestamps
 
+  has_many :permissions, class_name: "NamespacePermission"
+
   field :name, type: String
   field :email, type: String
   field :verified_email, type: Boolean
   field :picture, type: String
+
+  after_create :create_user_namespace
 
   validates :email, presence: true, uniqueness: true
 
@@ -30,5 +34,14 @@ class User
     user = User.create(userinfo.slice("name", "email", "verified_email", "picture"))
 
     return user if user.persisted?
+  end
+
+  def namespace
+    @namespace ||= Namespace.find_by(name: email)
+  end
+
+  def create_user_namespace
+    nsp = Namespace.create(name: self.email)
+    permissions.create(namespace: nsp, permissions: ['owner'])
   end
 end

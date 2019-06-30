@@ -1,24 +1,23 @@
 class AuthenticatedApplicationController < ApplicationController
   before_action :set_user!
-  before_action :ensure_user!
 
   private
 
   def set_user!
-    @current_user = User.find_by_jwt(request.headers["Authentication"])
-  rescue JWT::ExpiredSignature => e
-    render json: {error_code: 1, message: I18n.t("error.1")}, status: 401
-  rescue JWT::VerificationError, JWT::DecodeError => e
-    render json: {error_code: 5, message: I18n.t("error.5")}, status: 401
-  end
+    Thread.current[:user] = User.find_by_jwt(request.headers["Authentication"])
 
-  def ensure_user!
-    render json: {error_code: 2, message: I18n.t("error.2")}, status: 401 if current_user.blank?
+    unless Thread.current[:user].present?
+      return render json: e("sessions.not_found"), status: 401
+    end
+  rescue JWT::ExpiredSignature => e
+    render json: e("sessions.expired"), status: 401
+  rescue JWT::VerificationError, JWT::DecodeError => e
+    render json: e("sessions.invalid_token"), status: 401
   end
 
   protected
 
   def current_user
-    @current_user
+    @current_user ||= Thread.current[:user]
   end
 end

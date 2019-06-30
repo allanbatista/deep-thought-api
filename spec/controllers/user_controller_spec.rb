@@ -18,12 +18,21 @@ RSpec.describe UserController, type: :controller do
       })
     end
 
-    it "should fail auth" do
+    it "should set invalid token" do
       request.headers.merge!({ "Authentication" => "123" })
       get :show
 
       expect(response.status).to eq(401)
-      expect(response.body).to eq('{"error_code":5,"message":"Authentication fail parse token"}')
+      expect(response.body).to eq("{\"message\":\"Invalid Token\",\"code\":105}")
+    end
+
+    it "should cant find user" do
+      request.headers.merge!({ "Authentication" => User.first.jwt })
+      User.first.destroy
+      get :show
+
+      expect(response.status).to eq(401)
+      expect(response.body).to eq("{\"message\":\"Can't find User\",\"code\":102}")
     end
 
     it "should fail auth when expire token" do
@@ -33,7 +42,7 @@ RSpec.describe UserController, type: :controller do
       get :show
 
       expect(response.status).to eq(401)
-      expect(response.body).to eq('{"error_code":1,"message":"Authentication Expired"}')
+      expect(response.body).to eq("{\"message\":\"Authentication Expired\",\"code\":101}")
     end
   end
 end

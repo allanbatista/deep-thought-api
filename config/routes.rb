@@ -1,7 +1,7 @@
 Rails.application.routes.draw do
-  root "home#index"
-
-  resources :namespaces
+  resources :namespaces do
+    resources :permissions, controller: :namespace_permissions
+  end
 
   resources :connections do
     collection do
@@ -21,6 +21,4 @@ Rails.application.routes.draw do
       end
     end
   end
-
-  # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
 end
