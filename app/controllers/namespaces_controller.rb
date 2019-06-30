@@ -1,6 +1,6 @@
 class NamespacesController < AuthenticatedApplicationController
   before_action :set_namespace, only: [:show, :update, :destroy]
-  before_action :ensure_namespace, only: [:show, :update]
+  before_action :authorizate_owner!, only: [:update, :destroy]
 
   # GET /namespaces
   def index
@@ -16,21 +16,23 @@ class NamespacesController < AuthenticatedApplicationController
 
   # POST /namespaces
   def create
-    @namespace = Namespace.new(namespace_params)
+    @namespace = Namespace.new(params.permit(:namespace_id, :name))
 
     if @namespace.save
+      @namespace.permissions.create(user: current_user, permissions: ["owner"])
+
       render json: @namespace, status: :created, location: @namespace
     else
-      render json: @namespace.errors, status: :unprocessable_entity
+      render json: e("http.unprocessable_entity", errors: @namespace.errors), status: :unprocessable_entity
     end
   end
 
   # PATCH/PUT /namespaces/1
   def update
-    if @namespace.update(namespace_params)
+    if @namespace.update(params.permit(:namespace_id, :name))
       render json: @namespace
     else
-      render json: @namespace.errors, status: :unprocessable_entity
+      render json: e("http.unprocessable_entity", errors: @namespace.errors), status: :unprocessable_entity
     end
   end
 
@@ -43,14 +45,15 @@ class NamespacesController < AuthenticatedApplicationController
     # Use callbacks to share common setup or constraints between actions.
     def set_namespace
       @namespace = Namespace.find(params[:id])
+
+      unless @namespace.present?
+        return render json: e("http.not_found"), status: 404
+      end
     end
 
-    def ensure_namespace
-      return render json: {message: "Not Found"}, status: 404 if @namespace.blank?
-    end
-
-    # Only allow a trusted parameter "white list" through.
-    def namespace_params
-      params.permit(:name, :namespace_id)
+    def authorizate_owner!
+      unless @namespace.present? && @namespace.permissions_for(current_user).include?("owner")
+        return render json: e("authorization.only_owner"), status: 403
+      end
     end
 end

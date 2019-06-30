@@ -29,4 +29,40 @@
 # To learn more, please read the Rails Internationalization guide
 # available at http://guides.rubyonrails.org/i18n.html.
 en:
-  hello: "Hello world"
+  error:
+    sessions: 
+      expired:
+        message: Authentication Expired
+        code: 101
+      not_found:
+        message: Can't find User
+        code: 102
+      oauth_refused:
+        message: Oauth Refused
+        code: 103
+      invalid_email:
+        message: E-mail not authorizated
+        code: 104
+      invalid_token:
+        message: Invalid Token
+        code: 105
+      exception:
+        message: Exception error
+        code: 106
+    http:
+      not_found:
+        message: Not Found
+        code: 201
+      unprocessable_entity:
+        message: Unprocessable Entity
+        code: 202
+    connections:
+      required_type:
+        message: Required type
+        code: 301
+    authorization:
+      only_owner:
+        message: only owner can manager this resource
+        code: 401
+      
+
