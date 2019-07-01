@@ -13,6 +13,7 @@ services:
   api:
     build: .
     environment:
+      RAILS_ENV: 'development' 
       DEEP_THOUGHT__LOG_LEVEL: 'INFO' # ERROR, WARNING, INFO, DEBUG
       DEEP_THOUGHT__RAILS_LOG_TO_STDOUT: 'true' # true | false
       DEEP_THOUGHT__DB_URI: 'mongodb://deep_thought:deep_thought@deep-thought-db:27017/deep_thought'
