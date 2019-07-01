@@ -1,0 +1,9 @@
+# Git files
+README.md
+LICENSE
+
+# Path
+.circleci
+.git
+vendor
+tmp
