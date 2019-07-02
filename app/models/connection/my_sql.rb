@@ -8,8 +8,6 @@ module Connection
 
     validates_presence_of :host, :port
 
-    validate :database_connect!
-
     def as_json(options={})
       super(options.merge(except: [:password], methods: [:type]))
     end
@@ -36,16 +34,6 @@ module Connection
           type: "string"
         }
       }
-    end
-
-    def database_connect!
-      unless client.connect?
-        errors.add(:database_connection, "can't connect to database")
-      end
-    end
-
-    def client
-      @client ||= Connection::Adapter::MySQL.new({ host: host, port: port, username: username, password: password, database: database })
     end
   end
 end

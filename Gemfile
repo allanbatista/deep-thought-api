@@ -42,5 +42,3 @@ gem 'mongoid', '~> 7'
 gem "mongoid-paperclip"
 gem 'faraday'
 gem 'jwt'
-
-gem 'mysql2', '0.5.2'

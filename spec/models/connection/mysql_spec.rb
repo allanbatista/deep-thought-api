@@ -19,14 +19,4 @@ RSpec.describe Connection::MySQL, type: :model do
       expect(connection).not_to be_persisted
     end
   end
-
-  context "#execute" do
-    before do
-      @connection = Connection::MySQL.create(name: "MYSQL EXAMPLE", host: "127.0.0.1", username: 'root')
-    end
-
-    it "should execute a lazy executor" do
-      expect(@connection.client).to be_a(Connection::Adapter::MySQL)
-    end
-  end
 end
