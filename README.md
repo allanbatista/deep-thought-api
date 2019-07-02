@@ -15,6 +15,11 @@ Deep Thought is a project to make easy to create queries between diff data sourc
     DEEP_THOUGHT__AUTH__JWT_SECRET_KEY = random # every application restart it will be change
     DEEP_THOUGHT__AUTH__EMAIL_DOMAIN_PATTERN = .* # this permit configure only fell email pattern could login
 
+## Run with Docker Compose
+```
+docker-compose up
+```
+
 ## Documentations
 
 Documentation by resources:
