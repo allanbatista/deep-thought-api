@@ -44,11 +44,14 @@ GEM
       tzinfo (~> 1.1)
     addressable (2.6.0)
       public_suffix (>= 2.0.2, < 4.0)
+    amq-protocol (2.3.0)
     arel (9.0.0)
     bootsnap (1.4.4)
       msgpack (~> 1.0)
     bson (4.5.0)
     builder (3.2.3)
+    bunny (2.14.2)
+      amq-protocol (~> 2.3, >= 2.3.0)
     byebug (11.0.1)
     climate_control (0.2.0)
     codecov (0.1.14)
@@ -196,6 +199,7 @@ PLATFORMS
 
 DEPENDENCIES
   bootsnap (>= 1.1.0)
+  bunny
   byebug
   codecov
   database_cleaner

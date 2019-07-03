@@ -18,9 +18,11 @@ class Job
 
   validates :status, presence: true, inclusion: { in: ["none", "enqueued", "retry", "running", "done"] }
 
+  # :nocov:
   def execute!
     puts "Job #{id} executed. :)"
   end
+  # :nocov:
 
   def start!
     update_attributes!(started_at: DateTime.now, status: "running")
@@ -38,14 +40,18 @@ class Job
   end
 
   def fail!(message)
-    messages < message
+    messages << message
     finished_at = DateTime.now
     update_attributes!(finished_at: finished_at, status: "done", success: false, duration: (finished_at.to_time - started_at.to_time).round(2), messages: messages)
+  end
+
+  def complete?
+    status == "done"
   end
 
   protected
 
   def enqueue!
-    client.enqueue(self.id.to_s)
+    Rabbit.instance.enqueue(ENV['DEEP_THOUGHT__JOB__QUEUE_NAME'], self.id.to_s)
   end
 end

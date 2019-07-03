@@ -20,4 +20,8 @@ class Rabbit
     @exchanges[queue_name] = channel.exchange(queue_name, durable: true)
     @exchanges[queue_name]
   end
+
+  def self.instance
+    @@instance ||= Rabbit.new(ENV['DEEP_THOUGHT__JOB__RABBIT_URI'])
+  end
 end
