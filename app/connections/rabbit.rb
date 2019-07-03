@@ -1,5 +1,5 @@
 class Rabbit
-  attr_reader :connection
+  attr_reader :connection, :exchanges
 
   def initialize(uri)
     @exchanges = {}

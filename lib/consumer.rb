@@ -1,13 +1,11 @@
 class Consumer
-  attr_reader :options
-
   def execute!
     Rails.logger.info("Start rabbit connection")
-    connection = Bunny.new(ENV['DEEP_THOUGHT__JOB__RABBIT_URI'])
-    connection.start
+    @connection = Bunny.new(ENV['DEEP_THOUGHT__JOB__RABBIT_URI'])
+    @connection.start
 
     Rails.logger.info("Create rabbit channel")
-    channel = connection.create_channel(nil, concurrency)
+    channel = @connection.create_channel(nil, concurrency)
     channel.prefetch(concurrency)
 
     Rails.logger.info("Create rabbit queue")  
@@ -38,21 +36,33 @@ class Consumer
       break if stop?
 
       begin
-        job = Job.find_by(job_id)
-        
-        job.start!
-        job.execute!
-        job.success!
+        job = Job.find(job_id)
+
+        if job.present?
+          job.start!
+          job.execute!
+          job.success!
+        else
+          Rails.logger.info("[#{job_id}] job not found")
+        end
 
         channel.ack(delivery_info.delivery_tag)
+        Rails.logger.info("[#{job_id}] success!")
       rescue => e
         if should_retry?(properties)
           channel.reject(delivery_info.delivery_tag)
-          job.retry!(e.to_s) if job.present?
+          if job.present?
+            job.retry!(e.to_s)
+
+            Rails.logger.info("[#{job_id}][retry] #{e.to_s}")
+          end
         else
           queue_dead.publish(job_id)
           channel.ack(delivery_info.delivery_tag)
-          job.fail!(e.to_s) if job.present?
+          if job.present?
+            job.fail!(e.to_s)
+            Rails.logger.info("[#{job_id}][fail] #{e.to_s}")
+          end
         end
       end
     end
@@ -67,11 +77,12 @@ class Consumer
       sleep(sleep_time)
     end
   rescue => e
-    log_error(e)
+    puts e
     raise e
   ensure
     Rails.logger.info("stop consumer")
-    @consumer.cancel
+    @consumer.cancel rescue nil
+    @connection.close rescue nil
   end
 
   def should_retry?(properties)
