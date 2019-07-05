@@ -23,10 +23,10 @@ class Consumer
     
     Signal.trap('INT') do
       if stop?
-        puts "force stop! :("
+        Rails.logger.info("force stop! :(")
         exit
       else
-        puts "stopping gracely. wait please. :)"
+        Rails.logger.info("stopping gracely. wait please. :)")
         stop!
       end
     end
@@ -77,7 +77,7 @@ class Consumer
       sleep(sleep_time)
     end
   rescue => e
-    puts e
+    Rails.logger.error(e.to_s)
     raise e
   ensure
     Rails.logger.info("stop consumer")
