@@ -9,9 +9,9 @@ RSpec.describe ConnectionsController, type: :request do
     @namespace_creator.permissions.create(user: @user, permissions: ["creator"])
     @namespace_without_permission = Namespace.create(name: "namespace_without_permission")
 
-    @base = Connection::MySQL.create(name: "Base", host: "127.0.0.1", namespace: @namespace_without_permission)
-    @mysql = Connection::MySQL.create(name: "MySQL", host: "localhost", namespace: @user.namespace)
-    @mysql3 = Connection::MySQL.create(name: "MySQL3", host: "localhost", namespace: @namespace_creator)
+    @base = Connection::MySQL.create(name: "Base", host: "127.0.0.1", username: "root", namespace: @namespace_without_permission, database: 'deep_thought_test')
+    @mysql = Connection::MySQL.create(name: "MySQL", host: "127.0.0.1", username: "root", namespace: @user.namespace, database: 'deep_thought_test')
+    @mysql3 = Connection::MySQL.create(name: "MySQL3", host: "127.0.0.1", username: "root", namespace: @namespace_creator, database: 'deep_thought_test')
   end
 
   after do
@@ -80,28 +80,29 @@ RSpec.describe ConnectionsController, type: :request do
   context "#create" do
 
     it "should create new connection" do
-      post connections_path, params: { name: "NEW MySQL", type: "MySQL", host: "localhost" }, headers: {"Authentication" => @user.jwt}
+      post connections_path, params: { name: "NEW MySQL", type: "MySQL", host: "127.0.0.1", username: 'root', database: 'deep_thought_test' }, headers: {"Authentication" => @user.jwt}
 
       mysql = Connection::MySQL.find_by(name: "NEW MySQL")
       
       expect(response.status).to eq(201)
+    
       
       expect(JSON.parse(response.body)).to eq({
         "id" => mysql.id.to_s,
         "name" => "NEW MySQL",
         "type" => "MySQL",
-        "host" => "localhost",
+        "host" => "127.0.0.1",
         "port" => 3306,
-        "username" => nil,
-        "database" => nil,
+        "username" => "root",
+        "database" => "deep_thought_test",
         "namespace_id" => @user.namespace.id.to_s,
         "created_at" => mysql.created_at.as_json,
         "updated_at" => mysql.updated_at.as_json
       })
     end
 
-    it "should create a conneciton with other namespace" do
-      post connections_path, params: { name: "NEW MySQL", type: "MySQL", host: "localhost", namespace_id: @namespace_creator.id }, headers: {"Authentication" => @user.jwt}
+    it "should create a connection with other namespace" do
+      post connections_path, params: { name: "NEW MySQL", type: "MySQL", host: "127.0.0.1", username: 'root', namespace_id: @namespace_creator.id, database: 'deep_thought_test' }, headers: {"Authentication" => @user.jwt}
 
       mysql = Connection::MySQL.find_by(name: "NEW MySQL")
       
@@ -111,10 +112,10 @@ RSpec.describe ConnectionsController, type: :request do
         "id" => mysql.id.to_s,
         "name" => "NEW MySQL",
         "type" => "MySQL",
-        "host" => "localhost",
+        "host" => "127.0.0.1",
         "port" => 3306,
-        "username" => nil,
-        "database" => nil,
+        "username" => "root",
+        "database" => "deep_thought_test",
         "namespace_id" => @namespace_creator.id.to_s,
         "created_at" => mysql.created_at.as_json,
         "updated_at" => mysql.updated_at.as_json
@@ -122,7 +123,7 @@ RSpec.describe ConnectionsController, type: :request do
     end
 
     it "should not create a connection with a namespace that user has no permission" do
-      post connections_path, params: { name: "NEW MySQL", type: "MySQL", host: "localhost", namespace_id: @namespace_without_permission.id }, headers: {"Authentication" => @user.jwt}
+      post connections_path, params: { name: "NEW MySQL", type: "MySQL", host: "localhost", namespace_id: @namespace_without_permission.id, database: 'deep_thought_test' }, headers: {"Authentication" => @user.jwt}
 
       mysql = Connection::MySQL.find_by(name: "NEW MySQL")
       
@@ -141,7 +142,7 @@ RSpec.describe ConnectionsController, type: :request do
       post connections_path, params: { name: "NEW MySQL", type: "MySQL" }, headers: {"Authentication" => @user.jwt}
       
       expect(response.status).to eq(422)
-      expect(response.body).to eq("{\"message\":\"Unprocessable Entity\",\"code\":202,\"errors\":{\"host\":[\"can't be blank\"]}}")
+      expect(response.body).to eq("{\"message\":\"Unprocessable Entity\",\"code\":202,\"errors\":{\"host\":[\"can't be blank\"],\"database\":[\"can't be blank\"],\"database_connection\":[\"can't connect to database\"]}}")
     end
   end
 
@@ -199,7 +200,8 @@ RSpec.describe ConnectionsController, type: :request do
             "host"=>{"type"=>"string", "required"=>true},
             "port"=>{"type"=>"interger", "required"=>true, "default"=>3306},
             "username"=>{"type"=>"string"},
-            "password"=>{"type"=>"string"}
+            "password"=>{"type"=>"string"},
+            "database"=>{"required"=>true, "type"=>"string"}
           }
         }
       ])

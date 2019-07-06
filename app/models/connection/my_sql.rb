@@ -6,7 +6,9 @@ module Connection
     field :password, type: String
     field :database, type: String
 
-    validates_presence_of :host, :port
+    validates_presence_of :host, :port, :database
+
+    validate :database_connect!
 
     def as_json(options={})
       super(options.merge(except: [:password], methods: [:type]))
@@ -32,8 +34,22 @@ module Connection
         },
         password: {
           type: "string"
+        },
+        database: {
+          type: "string",
+          required: true
         }
       }
+    end
+
+    def database_connect!
+      unless client.connect?
+        errors.add(:database_connection, "can't connect to database")
+      end
+    end
+
+    def client
+      @client ||= Connection::Adapter::MySQL.new({ host: host, port: port, username: username, password: password, database: database })
     end
   end
 end

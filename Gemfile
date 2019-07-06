@@ -43,3 +43,6 @@ gem "mongoid-paperclip"
 gem 'faraday'
 gem 'jwt'
 gem 'bunny'
+
+gem 'mysql2'
+gem 'mongoid-paperclip'
