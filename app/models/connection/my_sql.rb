@@ -4,6 +4,7 @@ module Connection
     field :port, type: Integer, default: 3306
     field :username, type: String
     field :password, type: String
+    field :database, type: String
 
     validates_presence_of :host, :port
 

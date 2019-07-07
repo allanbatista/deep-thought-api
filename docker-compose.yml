@@ -10,6 +10,11 @@ services:
       MONGO_INITDB_DATABASE: 'deep_thought'
     ports:
       - 27017:27017
+  queue:
+    image: rabbitmq
+    ports:
+      - 5672:5672
+      - 15672:15672
   api:
     build: .
     environment:
@@ -25,9 +30,12 @@ services:
       DEEP_THOUGHT__AUTH__JWT_SECRET_KEY: 'jwt_secret_key' # every application restart it will be change
       DEEP_THOUGHT__AUTH__EMAIL_DOMAIN_PATTERN: .* # this permit configure only fell email pattern could login
       DEEP_THOUGHT__SECRET_KEY_BASE: 'secret_key_base'
+      DEEP_THOUGHT__JOB__RABBIT_URI: amqp://deep-thought-queue:5672/
     ports:
       - 3000:3000
     depends_on:
       - db
+      - queue
     links: 
       - db:deep-thought-db
+      - queue:deep-thought-queue

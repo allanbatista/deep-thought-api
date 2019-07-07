@@ -93,6 +93,7 @@ RSpec.describe ConnectionsController, type: :request do
         "host" => "localhost",
         "port" => 3306,
         "username" => nil,
+        "database" => nil,
         "namespace_id" => @user.namespace.id.to_s,
         "created_at" => mysql.created_at.as_json,
         "updated_at" => mysql.updated_at.as_json
@@ -113,6 +114,7 @@ RSpec.describe ConnectionsController, type: :request do
         "host" => "localhost",
         "port" => 3306,
         "username" => nil,
+        "database" => nil,
         "namespace_id" => @namespace_creator.id.to_s,
         "created_at" => mysql.created_at.as_json,
         "updated_at" => mysql.updated_at.as_json
