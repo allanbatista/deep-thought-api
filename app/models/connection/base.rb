@@ -10,12 +10,13 @@ module Connection
   
     validates :name, presence: true, uniqueness: true
     validate :skip_base_connection!
+    validate :database_connect!
 
+    # :nocov:
     def self.permit_params
       create_params.keys + [:namespace_id]
     end
     
-    # :nocov:
     def self.create_params
       {
         name: {
@@ -24,7 +25,6 @@ module Connection
         }
       }
     end
-    # :nocov:
 
     def self.type
       name.split("::").last
@@ -34,7 +34,18 @@ module Connection
       self.class.type
     end
 
-    private
+    def client
+      raise NotImplementedError
+    end
+    # :nocov:
+
+    protected
+
+    def database_connect!
+      unless client.connect?
+        errors.add(:database_connection, "can't connect to database")
+      end
+    end
 
     def skip_base_connection!
       if self.type == "Base"

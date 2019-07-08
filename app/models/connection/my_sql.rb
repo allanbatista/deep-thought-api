@@ -8,8 +8,6 @@ module Connection
 
     validates_presence_of :host, :port, :database
 
-    validate :database_connect!
-
     def as_json(options={})
       super(options.merge(except: [:password], methods: [:type]))
     end
@@ -40,12 +38,6 @@ module Connection
           required: true
         }
       }
-    end
-
-    def database_connect!
-      unless client.connect?
-        errors.add(:database_connection, "can't connect to database")
-      end
     end
 
     def client

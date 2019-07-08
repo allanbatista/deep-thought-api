@@ -142,7 +142,7 @@ RSpec.describe ConnectionsController, type: :request do
       post connections_path, params: { name: "NEW MySQL", type: "MySQL" }, headers: {"Authentication" => @user.jwt}
       
       expect(response.status).to eq(422)
-      expect(response.body).to eq("{\"message\":\"Unprocessable Entity\",\"code\":202,\"errors\":{\"host\":[\"can't be blank\"],\"database\":[\"can't be blank\"],\"database_connection\":[\"can't connect to database\"]}}")
+      expect(JSON.parse(response.body)).to eq({"message" => "Unprocessable Entity","code" => 202,"errors" => {"host" => ["can't be blank"],"database" => ["can't be blank"],"database_connection" => ["can't connect to database"]}})
     end
   end
 
