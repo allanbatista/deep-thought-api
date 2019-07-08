@@ -54,6 +54,21 @@ class ConnectionsController < NamespaceAuthenticatedApplicationController
     render json: types
   end
 
+  # GET /connections/:connection_id/databases
+  def databases
+    render json: @connection.client.databases
+  end
+
+  # GET /connections/:connection_id/:database_name/tables
+  def tables
+    render json: @connection.client.database(params[:database_name]).tables
+  end
+
+  # GET /connections/:connection_id/:database_name/:tables
+  def decribe
+    render json: @connection.client.database(params[:database_name]).table(params[:table_name]).describe
+  end
+
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_connection

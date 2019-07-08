@@ -13,6 +13,16 @@ class Connection::Result::MySQL < Connection::Result::Base
     end
   end
 
+  def map
+    results = []
+
+    @results.each(stream: true, :as => :array) do |row|
+      results << yield(row)
+    end
+
+    results
+  end
+
   def to_h(row)
     Hash[fields.zip(row)]
   end
