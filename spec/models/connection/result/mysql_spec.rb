@@ -13,6 +13,14 @@ RSpec.describe Connection::Result::MySQL do
     end
   end
 
+  context "#map" do
+    it "should execute a lazy executor with map" do
+      @connection.client.execute("select * from users") do |result|
+        expect(result.map { |d| d }).to eq([[1, 'allan'], [2, 'alessandra']])
+      end
+    end
+  end
+
   context "#to_tsv" do
     it "should convert to tsv file" do
       @connection.client.execute("select * from users") do |result|

@@ -13,4 +13,10 @@ class Connection::Adapter::Database
   def table(table_name)
     tables.detect { |table| table.name == table_name.to_s.strip }
   end
+
+  def as_json(options={})
+    {
+      "name" => name
+    }
+  end
 end

@@ -39,7 +39,7 @@ class Connection::Adapter::MySQL < Connection::Adapter::Base
     @describe = []
 
     execute("DESCRIBE `#{database.name}`.`#{table.name}`;") do |result|
-      @describe = result.map { |row| Connection::Adapter::Field.new(self, database, table, row[0], row[1]) }
+      @describe = result.map { |row| Connection::Adapter::Field.new(row[0], row[1]) }
     end
 
     @describe

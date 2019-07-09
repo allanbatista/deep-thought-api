@@ -27,4 +27,16 @@ RSpec.describe Connection::Adapter::MySQL do
       end
     end
   end
+
+  context "#database" do
+    before do
+      @connection = Connection::MySQL.create(name: "MYSQL EXAMPLE", host: "127.0.0.1", username: 'root', database: 'deep_thought_test')
+    end
+
+    it "get database" do
+      db = @connection.client.database('deep_thought_test')
+
+      expect(db).to be_a(Connection::Adapter::Database)
+    end
+  end
 end

@@ -1,10 +1,12 @@
 class Connection::Adapter::Field
-  attr_reader :client, :database, :table, :name, :type
+  attr_reader :name, :type
 
-  def initialize(client, database, table, name, type)
-    @client = client
-    @database = database
-    @table = table
-    @name   = name
+  def initialize(name, type)
+    @name = name
+    @type = type
+  end
+
+  def ==(other)
+    return self.as_json == other.as_json
   end
 end

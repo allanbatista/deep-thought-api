@@ -10,4 +10,10 @@ class Connection::Adapter::Table
   def describe
     @describe ||= client.describe(database, self)
   end
+
+  def as_json(options={})
+    {
+      name: name
+    }
+  end
 end
