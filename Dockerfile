@@ -12,7 +12,7 @@ WORKDIR /opt/app
 
 # install deps
 RUN apt-get update && \
-    apt-get install build-essential patch ruby-dev zlib1g-dev liblzma-dev -y && \
+    apt-get install build-essential patch ruby-dev zlib1g-dev liblzma-dev default-libmysqlclient-dev -y && \
     rm -rf /var/lib/apt/lists/*
 
 # Install all packages

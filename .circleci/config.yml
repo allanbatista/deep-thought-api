@@ -8,6 +8,10 @@ jobs:
           RAILS_ENV: test
       - image: mongo:4.1.13
       - image: rabbitmq
+      - image: mysql:5.7.26
+        environment:
+          MYSQL_ALLOW_EMPTY_PASSWORD: true
+          MYSQL_USER: root
     steps:
       - checkout
       - run: bundle install
