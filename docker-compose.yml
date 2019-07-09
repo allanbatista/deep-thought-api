@@ -19,9 +19,9 @@ services:
     build: .
     environment:
       RAILS_ENV: 'development' 
-      DEEP_THOUGHT__LOG_LEVEL: 'INFO' # ERROR, WARNING, INFO, DEBUG
+      DEEP_THOUGHT__LOG_LEVEL: 'DEBUG' # ERROR, WARNING, INFO, DEBUG
       DEEP_THOUGHT__RAILS_LOG_TO_STDOUT: 'true' # true | false
-      DEEP_THOUGHT__DB_URI: 'mongodb://deep_thought:deep_thought@deep-thought-db:27017/deep_thought'
+      DEEP_THOUGHT__DB__URI: 'mongodb://deep_thought:deep_thought@deep-thought-db:27017/deep_thought?authSource=admin'
       DEEP_THOUGHT__PROTOCOL: 'http'
       DEEP_THOUGHT__PORT: 3000
       DEEP_THOUGHT__HOSTNAME: 'deepthought.localhost.com'
