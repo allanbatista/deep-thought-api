@@ -6,7 +6,7 @@ RSpec.describe Auth::SessionsController, type: :controller do
       expect_any_instance_of(GoogleOauth).to receive(:client_id) { 'CLIENT_ID' }
 
       get :google_sing_in
-      expect(subject).to redirect_to("https://accounts.google.com/o/oauth2/v2/auth?access_type=offline&client_id=CLIENT_ID&include_granted_scopes=true&prompt=select_account&redirect_uri=http%3A%2F%2Fdeepthought.localhost.com%3A3000%2Fauth%2Fsessions%2Fgoogle_callback&response_type=code&scope=email")
+      expect(subject).to redirect_to("https://accounts.google.com/o/oauth2/v2/auth?access_type=offline&client_id=CLIENT_ID&include_granted_scopes=true&prompt=select_account&redirect_uri=http%3A%2F%2Flocalhost%3A3000%2Fauth%2Fsessions%2Fgoogle_callback&response_type=code&scope=email")
     end
   end
 
@@ -23,7 +23,7 @@ RSpec.describe Auth::SessionsController, type: :controller do
       expect(User.find_by(email: "allan@allanbatista.com.br")).to be_blank
 
       get :google_callback, params: { code: "123" }
-      expect(subject).to redirect_to("http://deepthought.localhost.com/?jwt=1")
+      expect(subject).to redirect_to("http://localhost:8080/?jwt=1")
       
       expect(User.find_by(email: "allan@allanbatista.com.br")).to be_persisted
     end
@@ -53,7 +53,7 @@ RSpec.describe Auth::SessionsController, type: :controller do
       expect($google_oauth).to receive(:userinfo) { raise StandardError.new("UNK") }
 
       get :google_callback, params: { code: "123" }
-      expect(subject).to redirect_to("http://deepthought.localhost.com/?code=106&message=Exception+error")
+      expect(subject).to redirect_to("http://localhost:8080/?code=106&message=Exception+error")
       
       expect(User.find_by(email: "allan@allanbatista.com.br")).to be_blank
     end
@@ -63,7 +63,7 @@ RSpec.describe Auth::SessionsController, type: :controller do
         .to_return(status: 400, body: '{"message": "error"}')
 
       get :google_callback, params: { code: "123" }
-      expect(subject).to redirect_to("http://deepthought.localhost.com/?code=103&message=Oauth+Refused")
+      expect(subject).to redirect_to("http://localhost:8080/?code=103&message=Oauth+Refused")
       
       expect(User.find_by(email: "allan@allanbatista.com.br")).to be_blank
     end
@@ -79,7 +79,7 @@ RSpec.describe Auth::SessionsController, type: :controller do
           .to_return(status: 200, body: fixture('apis/google_oauth/userinfo.json'))
   
         get :google_callback, params: { code: "123" }
-        expect(subject).to redirect_to("http://deepthought.localhost.com/?code=104&message=E-mail+not+authorizated")
+        expect(subject).to redirect_to("http://localhost:8080/?code=104&message=E-mail+not+authorizated")
         
         expect(User.find_by(email: "allan@allanbatista.com.br")).to be_blank
       end
@@ -97,7 +97,7 @@ RSpec.describe Auth::SessionsController, type: :controller do
           expect(User.find_by(email: "allan@allanbatista.com.br")).to be_blank
   
         get :google_callback, params: { code: "123" }
-        expect(subject).to redirect_to("http://deepthought.localhost.com/?jwt=1")
+        expect(subject).to redirect_to("http://localhost:8080/?jwt=1")
         
         expect(User.find_by(email: "allan@allanbatista.com.br")).to be_persisted
       end

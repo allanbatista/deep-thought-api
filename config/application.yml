@@ -5,10 +5,11 @@ default: &default
   DEEP_THOUGHT__DB__URI: mongodb://localhost:27017/deep_thought
   DEEP_THOUGHT__PROTOCOL: http
   DEEP_THOUGHT__PORT: 3000
-  DEEP_THOUGHT__HOSTNAME: deepthought.localhost.com
+  DEEP_THOUGHT__HOSTNAME: localhost
+  DEEP_THOUGHT__UI__DOMAIN_ORIGIN: localhost:8080
   DEEP_THOUGHT__AUTH__JWT_SECRET_KEY: <%= SecureRandom.urlsafe_base64(128) %>
   DEEP_THOUGHT__AUTH__EMAIL_DOMAIN_PATTERN: .*
-  DEEP_THOUGHT__AUTH__CALLBACK_ENDPOINT: http://deepthought.localhost.com/
+  DEEP_THOUGHT__AUTH__CALLBACK_ENDPOINT: http://localhost:8080/
   DEEP_THOUGHT__JOB__RABBIT_URI: amqp://localhost:5672
   DEEP_THOUGHT__JOB__CONCURRENCY: 1
   DEEP_THOUGHT__JOB__QUEUE_NAME: deep_thought_default
