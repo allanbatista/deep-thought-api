@@ -5,6 +5,10 @@ Rails.application.routes.draw do
   end
 
   resources :connections do
+    get "/databases", action: :databases
+    get "/:database_name/tables", action: :tables, as: :database_tables
+    get "/:database_name/:table_name/describe", action: :describe, as: :database_table_describe
+
     collection do
       get :types
     end

@@ -22,4 +22,22 @@ class Connection::Result::Base
     each { |row| data << row }
     data
   end
+
+  # :nocov:
+  def each
+    raise NotImplementedError
+  end
+
+  def map
+    raise NotImplementedError
+  end
+
+  def to_h(row)
+    raise NotImplementedError
+  end
+
+  def fields
+    raise NotImplementedError
+  end
+  # :nocov:
 end

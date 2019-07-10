@@ -2,7 +2,7 @@ class ConnectionsController < NamespaceAuthenticatedApplicationController
   attr_reader :clazz
 
   before_action :set_class_type, only: [:create]
-  before_action :set_connection, only: [:show, :update, :destroy]
+  before_action :set_connection, only: [:show, :update, :destroy, :databases, :tables, :describe]
 
   # GET /connections
   def index
@@ -54,10 +54,25 @@ class ConnectionsController < NamespaceAuthenticatedApplicationController
     render json: types
   end
 
+  # GET /connections/:connection_id/databases
+  def databases
+    render json: @connection.client.databases
+  end
+
+  # GET /connections/:connection_id/:database_name/tables
+  def tables
+    render json: @connection.client.database(params[:database_name]).tables
+  end
+
+  # GET /connections/:connection_id/:database_name/:tables
+  def describe
+    render json: @connection.client.database(params[:database_name]).table(params[:table_name]).describe
+  end
+
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_connection
-      @connection = Connection::Base.find_by(_id: params[:id], namespace: @namespace)
+      @connection = Connection::Base.find_by(_id: params[:id] || params[:connection_id], namespace: @namespace)
 
       unless @connection.present?
         return render json: e("http.not_found"), status: 404 unless @connection.present?

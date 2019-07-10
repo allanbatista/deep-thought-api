@@ -207,4 +207,31 @@ RSpec.describe ConnectionsController, type: :request do
       ])
     end
   end
+
+  context "#databases" do
+    it "found" do
+      get connection_databases_path(@mysql), headers: {"Authentication" => @user.jwt}
+
+      expect(response.status).to eq(200)
+      expect(response.body).to eq("[{\"name\":\"information_schema\"},{\"name\":\"deep_thought_test\"},{\"name\":\"mysql\"},{\"name\":\"performance_schema\"},{\"name\":\"sys\"}]")
+    end
+  end
+
+  context "#tables" do
+    it "found" do
+      get connection_database_tables_path(@mysql, 'deep_thought_test'), headers: {"Authentication" => @user.jwt}
+
+      expect(response.status).to eq(200)
+      expect(response.body).to eq("[{\"name\":\"users\"}]")
+    end
+  end
+
+  context "#describe" do
+    it "found" do
+      get connection_database_table_describe_path(@mysql, 'deep_thought_test', 'users'), headers: {"Authentication" => @user.jwt}
+
+      expect(response.status).to eq(200)
+      expect(response.body).to eq("[{\"name\":\"id\",\"type\":\"int(11)\"},{\"name\":\"name\",\"type\":\"varchar(45)\"}]")
+    end
+  end
 end

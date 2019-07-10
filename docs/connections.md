@@ -90,3 +90,32 @@ Query Params:
     
     status: 204
 
+
+    GET /connections/:id/databases
+    
+    status: 200
+    [
+        {
+            "name": "database_name"
+        }
+    ]
+
+    GET /connections/:id/databases/:database_name/tables
+
+    status: 200
+    [
+        {
+            "name": "table_name"
+        }
+    ]
+
+    GET /connections/:id/databases/:database_name/tables/:table_name/describe
+
+    status: 200
+    [
+        {
+            "name": "id",
+            "type": "int(11)"
+        }
+    ]
+
