@@ -45,5 +45,13 @@ module DeepThought
     end
 
     config.api_only = true
+
+    config.middleware.insert_before 0, Rack::Cors do
+      allow do
+        origins ENV['DEEP_THOUGHT__UI__DOMAIN_ORIGIN']
+        resource '*', headers: :any, methods: :any
+      end
+    end
+
   end
 end

@@ -45,3 +45,4 @@ gem 'jwt'
 gem 'bunny'
 
 gem 'mysql2'
+gem 'rack-cors'
