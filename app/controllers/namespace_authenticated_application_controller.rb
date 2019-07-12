@@ -1,4 +1,6 @@
 class NamespaceAuthenticatedApplicationController < AuthenticatedApplicationController
+  attr_reader :current_namespace
+
   before_action :set_namespace!
   before_action :authorizate!
 
@@ -10,12 +12,12 @@ class NamespaceAuthenticatedApplicationController < AuthenticatedApplicationCont
 
   def set_namespace!
     if params[:namespace_id].present? || params[:namespace].present?
-      @namespace = Namespace.find(params[:namespace_id] || params[:namespace])
+      @current_namespace = Namespace.find(params[:namespace_id] || params[:namespace])
     else
-      @namespace ||= current_user.namespace
+      @current_namespace ||= current_user.namespace
     end
 
-    unless @namespace.present?
+    unless @current_namespace.present?
       return render json: { message: "namespace is required" }, status: 403
     end
   end
@@ -27,7 +29,7 @@ class NamespaceAuthenticatedApplicationController < AuthenticatedApplicationCont
   }
 
   def authorizate!
-    permission = @namespace.permissions_for(current_user).map { |p| MAP_PERMISSIONS[p] }.max || 0
+    permission = @current_namespace.permissions_for(current_user).map { |p| MAP_PERMISSIONS[p] }.max || 0
     minimum = MAP_PERMISSIONS[minimum_required]
     method_minimum = request.method == "GET" ? 1 : 2
     

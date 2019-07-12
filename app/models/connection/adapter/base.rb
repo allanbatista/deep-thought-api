@@ -11,6 +11,14 @@ class Connection::Adapter::Base
 
   # :nocov:
   ##
+  # should execute query
+  #
+  # yield block with Connection::Result
+  def execute(sql)
+    raise NotImplementedError
+  end
+
+  ##
   # Should list databases
   #
   # @return Connection::Adapter::Database[]

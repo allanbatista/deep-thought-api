@@ -3,7 +3,7 @@ class NamespacePermissionsController < NamespaceAuthenticatedApplicationControll
 
   # GET /namespaces/:namespace_id/permissions
   def index
-    @namespace_permissions = NamespacePermission.where(namespace: @namespace)
+    @namespace_permissions = NamespacePermission.where(namespace: current_namespace)
 
     render json: @namespace_permissions
   end
@@ -15,10 +15,10 @@ class NamespacePermissionsController < NamespaceAuthenticatedApplicationControll
 
   # POST /namespaces/:namespace_id/permissions
   def create
-    @namespace_permission = @namespace.permissions.new(params.permit(:user_id, :permissions => []))
+    @namespace_permission = current_namespace.permissions.new(params.permit(:user_id, :permissions => []))
     
     if @namespace_permission.save
-      render json: @namespace_permission, status: :created, location: namespace_permission_path(@namespace, @namespace_permission)
+      render json: @namespace_permission, status: :created, location: namespace_permission_path(current_namespace, @namespace_permission)
     else
       render json: e("http.unprocessable_entity", errors: @namespace_permission.errors), status: :unprocessable_entity
     end
@@ -47,7 +47,7 @@ class NamespacePermissionsController < NamespaceAuthenticatedApplicationControll
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_namespace_permission
-      @namespace_permission = @namespace.permissions.find_by(_id: params[:id])
+      @namespace_permission = current_namespace.permissions.find_by(_id: params[:id])
 
       unless @namespace_permission.present?
         return render json: { message: "permission not found" }, status: 404

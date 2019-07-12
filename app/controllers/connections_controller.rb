@@ -6,7 +6,7 @@ class ConnectionsController < NamespaceAuthenticatedApplicationController
 
   # GET /connections
   def index
-    @connections = Connection::Base.where(namespace_id: @namespace)
+    @connections = Connection::Base.where(namespace: current_namespace)
 
     render json: @connections
   end
@@ -72,7 +72,7 @@ class ConnectionsController < NamespaceAuthenticatedApplicationController
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_connection
-      @connection = Connection::Base.find_by(_id: params[:id] || params[:connection_id], namespace: @namespace)
+      @connection = Connection::Base.find_by(_id: params[:id] || params[:connection_id], namespace: current_namespace)
 
       unless @connection.present?
         return render json: e("http.not_found"), status: 404 unless @connection.present?

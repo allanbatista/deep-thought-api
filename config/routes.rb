@@ -1,5 +1,9 @@
 Rails.application.routes.draw do
-  resources :queries
+  
+  namespace :job do
+    resources :queries
+  end
+
   resources :namespaces do
     resources :permissions, controller: :namespace_permissions
   end

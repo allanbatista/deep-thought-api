@@ -20,4 +20,10 @@ class Namespace
     return permissions.pluck(:permissions).flatten.uniq if permissions.present?
     []
   end
+
+  def childrens
+    cds = [self]
+    cds += Namespace.where(namespace: self).map(&:childrens)
+    cds.flatten.compact
+  end
 end
